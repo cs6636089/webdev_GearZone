@@ -1,5 +1,4 @@
-/* styles.css - Mobile-first */
-/* Font */
+
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&display=swap');
 
 
@@ -297,7 +296,7 @@ body {
 }
 
 .footer {
-  width: 100vw;                 /* เต็มหน้าจอ */
+  width: 100%;               /* เต็มหน้าจอ */
   background: #0f1113;
   color: #9aa0a6;
   display: flex;
