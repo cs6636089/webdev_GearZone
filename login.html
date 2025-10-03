@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GearZone - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container navbar">
+            <div class="brand">GEARZONE</div>
+            <nav class="navlinks">
+                <a href="index.html">หน้าหลัก</a>
+                <a href="categories.html">หมวดหมู่สินค้า</a>
+                <a href="login.html" class="active">เข้าสู่ระบบ</a>
+                <a href="#" class="cart" aria-label="Cart">🛒<span class="badge">0</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="login-wrap">
+            <div class="login-card" role="form" aria-labelledby="login-title">
+                <div style="text-align:center;margin-bottom:10px">
+                    <div
+                        style="width:64px;height:64px;border-radius:50%;background:linear-gradient(90deg,var(--red),var(--red2));display:inline-flex;align-items:center;justify-content:center;color:#fff">
+                        ⮕</div>
+                </div>
+                <h3 id="login-title">เข้าสู่ระบบ</h3>
+                <p class="small" style="text-align:center;margin-top:0;margin-bottom:12px;color:var(--muted)">
+                    กรอกข้อมูลเพื่อเข้าสู่ระบบ</p>
+
+                <!-- Form uses built-in validation: required, pattern, minlength -->
+                <form action="#" method="post" novalidate>
+                    <div class="form-group">
+                        <label for="email">อีเมล</label>
+                        <input id="email" name="email" type="email" placeholder="your@email.com" required
+                            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" aria-describedby="email-help">
+                        <small id="email-help" class="small">กรอกอีเมลรูปแบบตัวอย่าง: you@example.com</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน</label>
+                        <input id="password" name="password" type="password" placeholder="••••••••" required
+                            minlength="8" pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$" aria-describedby="pw-help">
+                        <small id="pw-help" class="small">อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลข</small>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                        <label style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)">
+                            <input type="checkbox" name="remember"> จำฉันไว้
+                        </label>
+                        <a href="#" class="small" style="color:var(--red)">ลืมรหัสผ่าน?</a>
+                    </div>
+
+                    <button class="btn btn--primary" type="submit" style="width:100%">⮕ เข้าสู่ระบบ</button>
+
+                    <p style="text-align:center;margin-top:12px" class="small">ยังไม่มีบัญชี? <a href="register.html"
+                            style="color:var(--red)">สมัครสมาชิก</a></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer container" style="margin-top:20px">
+        <div class="small">© 2025 GearZone.</div>
+    </footer>
+</body>
+
+</html>

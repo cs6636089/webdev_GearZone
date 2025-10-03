@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GearZone - Categories</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container navbar">
+            <div class="brand">GEARZONE</div>
+            <nav class="navlinks">
+                <a href="index.html">หน้าหลัก</a>
+                <a href="categories.html" class="active">หมวดหมู่สินค้า</a>
+                <a href="login.html">เข้าสู่ระบบ</a>
+                <a href="#" class="cart" aria-label="Cart">🛒<span class="badge">0</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="section-title">
+            <h3>หมวดหมู่สินค้า</h3>
+            <p>เลือกหมวดหมู่ที่ต้องการดูสินค้า</p>
+        </section>
+
+        <section style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding-bottom:20px">
+            <a class="card" href="#keyboards" aria-describedby="kbd-desc"
+                style="display:block;text-decoration:none;color:inherit">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1585079541540-d7bb4aa2f9b1?&w=1200&q=60');height:160px">
+                </div>
+                <div class="meta">
+                    <h4>คีย์บอร์ด (Keyboards)</h4>
+                    <p id="kbd-desc" class="small">Mechanical, RGB, Wireless</p>
+                </div>
+            </a>
+
+            <a class="card" href="#mice" style="display:block;text-decoration:none;color:inherit">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?&w=1200&q=60');height:160px">
+                </div>
+                <div class="meta">
+                    <h4>เมาส์ (Mice)</h4>
+                    <p class="small">Wired, Wireless, Ultralight</p>
+                </div>
+            </a>
+
+            <a class="card" href="#headsets" style="display:block;text-decoration:none;color:inherit">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1585386959984-a415522a4f0b?&w=1200&q=60');height:160px">
+                </div>
+                <div class="meta">
+                    <h4>หูฟัง (Headsets)</h4>
+                    <p class="small">Surround, Wireless, Noise-Canceling</p>
+                </div>
+            </a>
+
+            <a class="card" href="#chairs" style="display:block;text-decoration:none;color:inherit">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1578894384978-5a6e36b259d9?&w=1200&q=60');height:160px">
+                </div>
+                <div class="meta">
+                    <h4>เก้าอี้เกมมิ่ง (Chairs)</h4>
+                    <p class="small">Ergonomic, Racing style</p>
+                </div>
+            </a>
+        </section>
+
+        <section id="keyboards" class="section-title">
+            <h3>คีย์บอร์ดยอดนิยม</h3>
+            <p class="small">ดูตัวอย่างสินค้าแต่ละหมวด</p>
+        </section>
+
+        <div class="grid">
+            <article class="card" data-badge="ขายดี">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1545235617-9465cdbd3b38?&w=1200&q=60');">
+                </div>
+                <div class="meta">
+                    <h4>Compact Mechanical</h4>
+                    <p class="small">สวิตช์ tactile</p>
+                    <div class="price-row">
+                        <div class="price">฿2,800</div><a class="buy" href="#">สั่งซื้อ</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1545060894-9f6b5d4a5d3b?&w=1200&q=60');">
+                </div>
+                <div class="meta">
+                    <h4>Fullsize RGB</h4>
+                    <p class="small">แสงสวย ปรับได้หลายโหมด</p>
+                    <div class="price-row">
+                        <div class="price">฿3,900</div><a class="buy" href="#">สั่งซื้อ</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8?&w=1200&q=60');">
+                </div>
+                <div class="meta">
+                    <h4>Wireless Tenkeyless</h4>
+                    <p class="small">สะดวก ไม่เกะกะสาย</p>
+                    <div class="price-row">
+                        <div class="price">฿4,200</div><a class="buy" href="#">สั่งซื้อ</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="thumb"
+                    style="background-image:url('https://images.unsplash.com/photo-1527430253228-e93688616381?&w=1200&q=60');">
+                </div>
+                <div class="meta">
+                    <h4>Hot-Swappable</h4>
+                    <p class="small">เปลี่ยนสวิตช์ได้เอง</p>
+                    <div class="price-row">
+                        <div class="price">฿3,500</div><a class="buy" href="#">สั่งซื้อ</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <footer class="footer" style="margin-top:26px">
+            <div class="small">© 2025 GearZone.</div>
+        </footer>
+    </main>
+</body>
+
+</html>

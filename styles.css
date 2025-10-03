@@ -81,7 +81,6 @@ body {
 .navlinks a:focus {
   color: #fff;
   outline: none;
-  box-shadow: var(--accent-glow)
 }
 
 .cart {

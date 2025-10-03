@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก - GearZone</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">GEARZONE</div>
+        <nav>
+            <a href="index.html">หน้าหลัก</a>
+            <a href="categories.html">หมวดหมู่สินค้า</a>
+            <a href="login.html">เข้าสู่ระบบ</a>
+        </nav>
+        <div class="cart">🛒</div>
+    </header>
+
+    <!-- Register Form -->
+    <section class="form-container">
+        <form class="form-box" action="#" method="post">
+            <div class="form-icon">➕</div>
+            <h2>สมัครสมาชิก</h2>
+            <p>สร้างบัญชีใหม่เพื่อเริ่มช้อปปิ้ง</p>
+
+            <label for="fullname">ชื่อ-นามสกุล</label>
+            <input type="text" id="fullname" name="fullname" placeholder="กรอกชื่อ-นามสกุล" required>
+
+            <label for="email">อีเมล</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+
+            <label for="password">รหัสผ่าน</label>
+            <input type="password" id="password" name="password" minlength="6" required>
+
+            <label for="confirm-password">ยืนยันรหัสผ่าน</label>
+            <input type="password" id="confirm-password" name="confirm-password" minlength="6" required>
+
+            <button type="submit" class="btn">สมัครสมาชิก</button>
+            <p class="switch">มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a></p>
+            <a href="index.html" class="back-link">← กลับหน้าหลัก</a>
+        </form>
+    </section>
+</body>
+
+</html>
