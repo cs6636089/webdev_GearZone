@@ -1,6 +1,6 @@
 <?php
-require_once DIR.'/config/session.php';
-require_once DIR.'/connect.php';
+require_once __DIR__ . '/config/session.php';
+require_once __DIR__ . '/connect.php';
 
 // รับค่าจากฟอร์ม
 $id = trim($_POST['email'] ?? '');   // ช่องในฟอร์มใช้ชื่อ email แต่ใส่ username ก็ได้
