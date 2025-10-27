@@ -12,17 +12,11 @@
 <body>
     <header class="header">
         <div class="container navbar">
-            <div class="brand">GEARZONE</div>
-            <nav class="navlinks" aria-label="Top Links">
-                <a href="/~cs6636089/GearZone/index.html" class="active">หน้าหลัก</a>
-                <a href="/~cs6636089/GearZone/frontend/categories.html">หมวดหมู่สินค้า</a>
-                <a href="/~cs6636089/GearZone/frontend/login.html">เข้าสู่ระบบ</a>
-                <a href="#" class="cart" aria-label="Cart">
-                    <i class="fas fa-cart-shopping"></i>
-                </a>
-            </nav>
+        <div class="brand">GEARZONE</div>
+        <div id="navbar-container"></div>
         </div>
     </header>
+
 
     <main>
         <section class="hero container">
@@ -126,8 +120,20 @@
         <div class="footer-left">GEARZONE</div><br>
         <div class="footer-right">&copy; 2025 GearZone. สงวนลิขสิทธิ์.</div>
     </footer>
-
-
 </body>
+<script>
+  var xhr = new XMLHttpRequest();
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      document.getElementById("navbar-container").innerHTML = xhr.responseText;
+    }
+  };
+  xhr.open("GET", "/~cs6636089/GearZone/backend/navbar.php", true);
+  xhr.withCredentials = true; //ส่ง session cookie ไปด้วย
+  xhr.send();
+</script>
+
+
 
 </html>
