@@ -41,7 +41,7 @@ $items = $itemStmt->fetchAll();
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <title>สั่งซื้อสำเร็จ</title>
+  <title>สั่งซื้อสำเร็จ - GearZone</title>
   <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
   <style>
     .box {
@@ -98,6 +98,43 @@ $items = $itemStmt->fetchAll();
   <?php } else { ?>
     <h3>ไม่พบคำสั่งซื้อ</h3>
   <?php } ?>
+
+    <?php 
+    if ($order && strtolower($order['payment_status']) !== 'paid') { ?>
+        <div style="max-width:800px;margin:16px auto;background:#fff;color:#333;padding:16px;border-radius:12px;text-align:left">
+            <h4 style="margin:0 0 10px;color:#d00;">ชำระเงิน / อัปโหลดสลิป</h4>
+
+            <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+                <div style="flex:0 0 240px;text-align:center">
+                    <img src="/~cs6636089/GearZone/assets/qr_payment.jpg" alt="QR สำหรับชำระเงิน"
+                        style="width:240px;height:240px;object-fit:contain;border:1px solid #eee;border-radius:10px;background:#fafafa">
+                    <div style="font-size:13px;color:#666;margin-top:6px">
+                        สแกน QR เพื่อชำระยอด: ฿<?php echo $order['total_amount']; ?>
+                    </div>
+                </div>
+
+                <form action="/~cs6636089/GearZone/backend/upload_slip.php"
+                        method="post" enctype="multipart/form-data"
+                        style="flex:1;min-width:260px;background:#f9f9f9;border:1px solid #eee;padding:12px;border-radius:10px">
+                    <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
+                    <label style="display:block;margin:6px 0 8px">อัปโหลดสลิปโอนเงิน (รองรับ JPG, PNG, PDF, ≤ 5MB)</label>
+                    <input type="file" name="slip" accept="image/*,application/pdf" required
+                        style="display:block;margin-bottom:10px">
+                    <button type="submit"
+                            style="background:red;color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer">
+                    ส่งสลิปให้ตรวจสอบ
+                    </button>
+                    <div style="font-size:12px;color:#888;margin-top:8px">
+                        หลังอัปโหลดแล้ว สถานะจะเปลี่ยนเป็น “รอตรวจสอบ” และแอดมินจะตรวจสอบให้ค่ะ
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php } ?>
+
+
+
+
 </main>
 
 <footer class="footer">

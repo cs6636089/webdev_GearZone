@@ -2,12 +2,6 @@
 session_start();
 include "../backend/connect.php"; 
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
-    $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนเข้าดูหมวดหมู่สินค้า";
-    header("Location: /~cs6636089/GearZone/frontend/login.html");
-    exit;
-}
-
 $cat_id = isset($_GET['id']) ? $_GET['id'] : '';
 
 $cat_stmt = $pdo->prepare("SELECT category_name FROM Categories WHERE category_id = ?");

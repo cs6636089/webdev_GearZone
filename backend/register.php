@@ -57,5 +57,5 @@ $_SESSION['user'] = [
     'is_admin' => 0
 ];
 
-header('Location: /~cs6636089/GearZone/frontend/user.php');
+header('Location: /~cs6636089/GearZone/frontend/login.html?success=1');
 exit;

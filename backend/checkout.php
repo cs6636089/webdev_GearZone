@@ -20,7 +20,7 @@ if (isset($_SESSION['user_id'])) {
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <title>เช็คเอาต์</title>
+  <title>เช็คเอาต์ - GearZone</title>
   <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
   <style>
     .wrap{

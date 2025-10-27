@@ -24,7 +24,7 @@ $stmt2->execute();
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <title>รายละเอียดคำสั่งซื้อ</title>
+  <title>รายละเอียดคำสั่งซื้อ - GearZone</title>
   <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
   <style>
     .wrap{

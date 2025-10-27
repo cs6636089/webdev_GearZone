@@ -2,6 +2,12 @@
 session_start();
 include "../backend/connect.php"; 
 
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
+  $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนเปิดตะกร้า";
+  header("Location: /~cs6636089/GearZone/frontend/login.html");
+  exit;
+}
+
 if (isset($_SESSION['cart_flash'])) {
   $flash = $_SESSION['cart_flash'];
 } else {
