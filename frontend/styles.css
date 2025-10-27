@@ -9,15 +9,19 @@
 }
 
 /* ========== Sticky Footer Layout ========== */
-html, body {
-  height: 100%;           /* ให้ body สูงเต็มจอ */
+html,
+body {
+  height: 100%;
+  /* ให้ body สูงเต็มจอ */
   margin: 0;
   display: flex;
-  flex-direction: column; /* วางแนวตั้ง: header → main → footer */
+  flex-direction: column;
+  /* วางแนวตั้ง: header → main → footer */
 }
 
 main {
-  flex: 1;                /* ดัน footer ลงล่างอัตโนมัติ */
+  flex: 1;
+  /* ดัน footer ลงล่างอัตโนมัติ */
 }
 
 
@@ -62,9 +66,9 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;     
+  padding: 0 20px;
   width: 100%;
-  height: 70px;      
+  height: 70px;
 }
 
 .brand {
@@ -94,9 +98,9 @@ input:focus {
 .navlinks a {
   color: #9aa0a6;
   text-decoration: none;
-  padding: 10px 12px;  
+  padding: 10px 12px;
   border-radius: 8px;
-  line-height: 1;    
+  line-height: 1;
 }
 
 .navlinks a:hover,
@@ -106,7 +110,7 @@ input:focus {
 }
 
 /* active tab */
-.navlinks > a.active {
+.navlinks>a.active {
   color: #fff;
   border-bottom: 3px solid rgba(255, 60, 48, 0.3);
   padding-bottom: 10px;
@@ -362,8 +366,10 @@ input:focus {
   }
 
   .navbar {
-    padding: 0 20px;   /* แทนของเดิมที่เป็น 20px 0 */
-    height: 70px;      /* คงความสูงไว้ */
+    padding: 0 20px;
+    /* แทนของเดิมที่เป็น 20px 0 */
+    height: 70px;
+    /* คงความสูงไว้ */
   }
 
   .container {
@@ -400,7 +406,7 @@ body.login-page .login-card {
   background: white;
   padding: 28px;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 
@@ -480,89 +486,102 @@ body.login-page .login-card .login-footer a:hover {
 }
 
 /* ==================== Register Page ==================== */
+/* ===== Register = Login style (override) ===== */
+body.register-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 body.register-page main {
   flex: 1;
+}
+
+body.register-page .form-container {
+  min-height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 100px 16px 80px;
-  box-sizing: border-box;
+  padding: 40px 16px;
 }
 
+/* กล่องฟอร์ม ให้หน้าตา/ขนาด/เงาเหมือน login */
 body.register-page .form-box {
-  background: #1a1a1a;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(255,0,0,0.3);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
-  color: #fff;
-  font-family: 'Rajdhani', sans-serif;
+  color: #333;
 }
 
-.form-box h2 {
-  color: #ff3c2e;
-  margin-bottom: 10px;
+/* หัวข้อ/คำอธิบายเหมือน login */
+body.register-page .form-box h2 {
+  color: red;
+  margin-bottom: 12px;
 }
 
-.form-box p {
-  color: #aaa;
-  margin-bottom: 1.5rem;
+body.register-page .form-box p {
+  color: #666;
+  margin-bottom: 16px;
 }
 
-.form-box label {
+/* label + input เหมือน login */
+body.register-page .form-box label {
   display: block;
   text-align: left;
-  margin: 8px 0 5px;
-  color: #ccc;
+  margin: 0 0 6px;
+  color: #333;
+  font-size: 14px;
 }
 
-.form-box input {
+body.register-page .form-box input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: none;
-  background: #2b2b2b;
-  color: #fff;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  margin-bottom: 14px;
 }
 
-.form-box input:focus {
+body.register-page .form-box input:focus {
   outline: none;
-  box-shadow: 0 0 8px red;
+  border-color: #ff3c2e;
+  box-shadow: 0 0 0 3px rgba(255, 60, 48, .2);
 }
 
-.btn-form {
-  background: red;
-  border: none;
-  color: white;
-  padding: 12px;
+/* ปุ่ม/ลิงก์ */
+body.register-page .btn-form {
   width: 100%;
+  padding: 12px;
+  background: red;
+  color: #fff;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: 0.3s;
+  font-size: 16px;
 }
 
-.switch {
-  margin-top: 15px;
+body.register-page .btn-form:hover {
+  background: darkred;
 }
 
-.switch a {
-  color: #ff3c2e;
-  text-decoration: none;
+body.register-page .switch {
+  margin-top: 12px;
+  font-size: 14px;
 }
 
-.switch a:hover {
-  text-decoration: underline;
+body.register-page .switch a {
+  color: red;
 }
 
-.back-link {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: #aaa;
+body.register-page .back-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #666;
 }
 
 /* ==================== Categories Page ==================== */
@@ -592,14 +611,14 @@ body.categories-page .category-grid .card .thumb {
 
 body.categories-page .category-grid .card .meta {
   background-color: white;
-  color: black;            
-  padding: 10px;            
-  border-radius: 0 0 8px 8px; 
+  color: black;
+  padding: 10px;
+  border-radius: 0 0 8px 8px;
 }
 
 body.categories-page .category-grid .card .meta p {
-  font-size: 16px;   
-  margin: 4px 0 0; 
+  font-size: 16px;
+  margin: 4px 0 0;
 }
 
 body.categories-page .category-grid .card .meta h4 {
