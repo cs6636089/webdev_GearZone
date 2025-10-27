@@ -12,6 +12,13 @@ if (isset($_POST['action'])) {
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 }
+if ($action === 'add') {
+  if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
+    $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า";
+    header("Location: /~cs6636089/GearZone/frontend/login.html");
+    exit;
+  }
+}
 
 // แสดงข้อความแจ้งเตือน
 function set_flash($msg) {

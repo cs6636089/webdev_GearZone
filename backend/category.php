@@ -1,5 +1,12 @@
 <?php
+session_start();
 include "../backend/connect.php"; 
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
+    $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนเข้าดูหมวดหมู่สินค้า";
+    header("Location: /~cs6636089/GearZone/frontend/login.html");
+    exit;
+}
 
 $cat_id = isset($_GET['id']) ? $_GET['id'] : '';
 
@@ -25,7 +32,6 @@ $cat_row = $cat_stmt->fetch();
         margin: 20px auto 40px;
       }
 
-
       @media (min-width: 720px) {
         .product-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -39,7 +45,6 @@ $cat_row = $cat_stmt->fetch();
       }
   </style>
 
-
 </head>
 <body>
 
@@ -49,7 +54,12 @@ $cat_row = $cat_stmt->fetch();
       <nav class="navlinks" aria-label="Top Links">
         <a href="/~cs6636089/GearZone/index.html">หน้าหลัก</a>
         <a href="/~cs6636089/GearZone/frontend/categories.html" class="active">หมวดหมู่สินค้า</a>
-        <a href="/~cs6636089/GearZone/frontend/login.html">เข้าสู่ระบบ</a>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0): ?>
+          <a href="/~cs6636089/GearZone/backend/logout.php">ออกจากระบบ</a>
+        <?php else: ?>
+          <a href="/~cs6636089/GearZone/frontend/login.html">เข้าสู่ระบบ</a>
+        <?php endif; ?>
+
         <a href="/~cs6636089/GearZone/backend/cart_view.php" class="cart" aria-label="Cart">
           <i class="fas fa-cart-shopping"></i>
         </a>
