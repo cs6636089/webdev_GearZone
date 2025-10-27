@@ -16,28 +16,30 @@ $cat_row = $cat_stmt->fetch();
     <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        .product-grid {
+      .product-grid {
         display: grid;
         grid-template-columns: 1fr;  
         gap: 20px;
         justify-items: center;
         max-width: 1000px;
         margin: 20px auto 40px;
-        }
+      }
 
 
-        @media (min-width: 720px) {
+      @media (min-width: 720px) {
         .product-grid {
-            grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(2, 1fr);
         }
-        }
+      }
 
-        @media (min-width: 1000px) {
+      @media (min-width: 1000px) {
         .product-grid {
-            grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(4, 1fr);
         }
-        }
-    </style>
+      }
+  </style>
+
+
 </head>
 <body>
 
@@ -48,7 +50,7 @@ $cat_row = $cat_stmt->fetch();
         <a href="/~cs6636089/GearZone/index.html">หน้าหลัก</a>
         <a href="/~cs6636089/GearZone/frontend/categories.html" class="active">หมวดหมู่สินค้า</a>
         <a href="/~cs6636089/GearZone/frontend/login.html">เข้าสู่ระบบ</a>
-        <a href="#" class="cart" aria-label="Cart">
+        <a href="/~cs6636089/GearZone/backend/cart_view.php" class="cart" aria-label="Cart">
           <i class="fas fa-cart-shopping"></i>
         </a>
       </nav>
@@ -74,15 +76,29 @@ $stmt->execute();
            width="100%" height="150"
            style="object-fit:cover; border-radius:6px;"
            onerror="this.onerror=null;this.src='/~cs6636089/GearZone/assets/sample.jpg';">
-      <div style="color:black; font-weight:bold; margin-top:6px;"><?= $row['product_name'] ?></div>
-      <div style="color:red; font-weight:bold;">฿<?= $row['price'] ?></div>
-      <div style="font-size:14px; color:gray;">จำนวนคงเหลือ: <?= $row['stock_quantity'] ?></div>
-      <button style="background:red; color:white; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; margin-top:8px;">
-        เพิ่มลงตะกร้า
-      </button>
+      
+      <div style="color:black; font-weight:bold; margin-top:6px;">
+        <?= $row['product_name'] ?>
+      </div>
+      <div style="color:red; font-weight:bold;">
+        ฿<?=$row['price'] ?>
+      </div>
+      <div style="font-size:14px; color:gray;">
+        จำนวนคงเหลือ: <?= $row['stock_quantity'] ?>
+      </div>
+
+      <form action="/~cs6636089/GearZone/backend/cart.php" method="post" style="margin-top:8px;">
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
+        <input type="hidden" name="qty" value="1">
+        <button type="submit" style="background:red; color:white; border:none; padding:8px 10px; border-radius:6px; cursor:pointer;">
+          เพิ่มลงตะกร้า
+        </button>
+      </form>
     </div>
   <?php } ?>
 </div>
+
 
 
 <footer class="footer">
