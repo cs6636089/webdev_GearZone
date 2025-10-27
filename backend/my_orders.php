@@ -10,13 +10,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
 
 $user_id = $_SESSION['user_id'];
 
-// ดึงข้อมูลคำสั่งซื้อ พร้อมเลขพัสดุจากตาราง Shipping_tracking
-$sql = "SELECT Orders.order_day, Orders.total_amount, Orders.payment_status,
-            Orders.order_status, Shipping_tracking.tracking_number, Shipping_tracking.current_status
-            FROM Orders LEFT JOIN Shipping_tracking
-            ON Shipping_tracking.order_id = Orders.order_id WHERE Orders.user_id = ?
-            ORDER BY Orders.order_id DESC";
-
+$sql = "SELECT Orders.order_id, Orders.order_day, Orders.total_amount, 
+               Orders.payment_status, Orders.order_status,
+               Shipping_tracking.tracking_number, Shipping_tracking.current_status
+               FROM Orders LEFT JOIN Shipping_tracking
+               ON Shipping_tracking.order_id = Orders.order_id 
+               WHERE Orders.user_id = ? ORDER BY Orders.order_id DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$user_id]);
 ?>
@@ -120,10 +119,19 @@ $stmt->execute([$user_id]);
                   <button type="submit" class="btn">ส่งสลิป</button>
                 </form>
               <?php } elseif ($o['payment_status'] == 'Pending Review') { ?>
-                <p style="color:orange; font-size:14px;">รอตรวจสอบสลิป...</p>
+                <p style="color:orange; font-size:14px;">รอตรวจสอบสลิป</p>
               <?php } elseif ($o['payment_status'] == 'Paid') { ?>
                 <p style="color:green; font-size:14px;">ชำระเงินเรียบร้อย</p>
               <?php } ?>
+                <a href="/~cs6636089/GearZone/backend/report_issue.php?order_id=<?php echo $o['order_id']; ?>"
+                style="margin-top:6px; display:inline-block; 
+                        color:#555; text-decoration:underline; font-size:14px;"
+                onmouseover="this.style.color='red'" 
+                onmouseout="this.style.color='#555'">
+                รายงานปัญหา
+                </a>
+
+
             </td>
           </tr>
         <?php } ?>
