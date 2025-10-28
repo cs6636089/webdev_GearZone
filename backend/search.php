@@ -56,16 +56,41 @@ if ($q !== "") {
       border-radius:10px;
     }
     .card img { 
-        width:100%; height:150px; object-fit:cover; border-radius:6px; }
-    .card .name { font-weight:700; margin-top:6px; }
-    .card .price { color:red; font-weight:700; margin-top:4px; }
-    .card .stock { font-size:13px; color:#666; }
-    .card form { margin-top:8px; }
-    .btn-red {
-      background:red; color:#fff; border:none; padding:8px 10px;
-      border-radius:8px; cursor:pointer;
+        width:100%; 
+        height:150px; 
+        object-fit:cover; 
+        border-radius:6px; 
     }
-    .empty { background:#fff; color:#333; padding:16px; border-radius:10px; text-align:center; }
+    .card .name { 
+        font-weight:700; 
+        margin-top:6px; 
+    }
+    .card .price { 
+        color:red; 
+        font-weight:700; 
+        margin-top:4px; 
+    }
+    .card .stock { 
+        font-size:13px; 
+        color:#666; 
+    }
+    .card form { 
+        margin-top:8px; 
+    }
+    .btn-red {
+      background:red; 
+      color:#fff; 
+      border:none; 
+      padding:8px 10px;
+      border-radius:8px; 
+      cursor:pointer;
+    }
+    .empty { background:#fff; 
+        color:#333; 
+        padding:16px; 
+        border-radius:10px; 
+        text-align:center; 
+    }
   </style>
 </head>
 <body>
@@ -110,7 +135,7 @@ if ($q !== "") {
   <div class="footer-right">&copy; 2025 GearZone. สงวนลิขสิทธิ์.</div>
 </footer>
 
-<!-- โหลด navbar ผ่าน AJAX -->
+
 <script>
   (function(){
     var xhr = new XMLHttpRequest();

@@ -82,23 +82,63 @@ if (isset($_SESSION['user_id'])) {
     $grand = 0;
     foreach($cart as $pid=>$it){ $grand = $grand + ($it['price'] * $it['qty']); }
   ?>
-    <h4>สรุปรายการ</h4>
-    <?php foreach($cart as $pid=>$it){ ?>
-      <div class="line">
-        <div><?php echo $it['name']; ?> x <?php echo $it['qty']; ?></div>
-        <div>฿<?php echo ($it['price']*$it['qty']); ?></div>
-      </div>
-    <?php } ?>
-    <div class="line" style="font-weight:bold;">
-      <div>รวมทั้งสิ้น</div><div>฿<?php echo $grand; ?></div>
-    </div>
+<?php
+  // รวมราคาสินค้าในตะกร้า
+  $grand = 0;
+  foreach($cart as $pid=>$it){ $grand += ($it['price'] * $it['qty']); }
 
-    <h4 style="margin-top:16px;">ที่อยู่จัดส่ง</h4>
-    <form action="/~cs6636089/GearZone/backend/place_order.php" method="post">
-      <textarea name="shipping_address" rows="5" placeholder="ระบุที่อยู่จัดส่ง" required></textarea>
-      <input type="hidden" name="total_amount" value="<?php echo $grand; ?>">
-      <button class="btn" type="submit">ยืนยันสั่งซื้อ</button>
-    </form>
+  // ===== ส่วนลดเดือนเกิด 12% =====
+  $birth_ok = false;
+  $discount = 0;
+  $final    = $grand;
+
+  $u = $pdo->prepare("SELECT birthdate FROM Users WHERE user_id = ?");
+  $u->execute([ $user_id ]);
+  $ud = $u->fetch(PDO::FETCH_ASSOC);
+
+  if ($ud && !empty($ud['birthdate'])) {
+    $bd_m  = (int)date('n', strtotime($ud['birthdate']));
+    $now_m = (int)date('n');
+    if ($bd_m === $now_m) {
+      $birth_ok = true;
+      $discount = round($grand * 0.12, 2);
+      $final    = max(0, $grand - $discount);
+    }
+  }
+?>
+
+<h4>สรุปรายการ</h4>
+<?php foreach($cart as $pid=>$it){ ?>
+  <div class="line">
+    <div><?php echo $it['name']; ?> x <?php echo $it['qty']; ?></div>
+    <div>฿<?php echo ($it['price']*$it['qty']); ?></div>
+  </div>
+<?php } ?>
+
+<div class="line">
+  <div>รวมสินค้า (Subtotal)</div>
+  <div>฿<?php echo $grand; ?></div>
+</div>
+
+<?php if ($birth_ok) { ?>
+  <div class="line" style="color:#d00;">
+    <div>ส่วนลดเดือนเกิด 12%</div>
+    <div>-฿<?php echo $discount; ?></div>
+  </div>
+<?php } ?>
+
+<div class="line" style="font-weight:bold;">
+  <div>ยอดสุทธิ</div>
+  <div>฿<?php echo $final; ?></div>
+</div>
+
+<h4 style="margin-top:16px;">ที่อยู่จัดส่ง</h4>
+<form action="/~cs6636089/GearZone/backend/place_order.php" method="post">
+  <textarea name="shipping_address" rows="5" placeholder="ระบุที่อยู่จัดส่ง" required></textarea>
+  <!-- ส่งยอดสุทธิไปด้วย (แต่บน server ควรคำนวณซ้ำเพื่อความชัวร์) -->
+  <input type="hidden" name="total_amount" value="<?php echo $final; ?>">
+  <button class="btn" type="submit">ยืนยันสั่งซื้อ</button>
+</form>
   <?php } ?>
 </main>
 

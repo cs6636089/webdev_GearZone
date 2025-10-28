@@ -8,10 +8,13 @@ if (isset($_GET['id'])) {
     $order_id = 0; 
 }
 
-$stmt = $pdo->prepare("SELECT * FROM Orders WHERE order_id = ?");
+$stmt = $pdo->prepare(" SELECT Orders.*, Users.birthdate
+    FROM Orders JOIN Users ON Users.user_id = Orders.user_id
+    WHERE Orders.order_id = ?");
 $stmt->bindParam(1, $order_id);
 $stmt->execute();
-$order = $stmt->fetch();
+$order = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
 $stmt2 = $pdo->prepare("SELECT Order_items.*, Products.product_name
                         FROM Order_items
@@ -69,7 +72,23 @@ $stmt2->execute();
 <main class="wrap">
   <?php if ($order) { ?>
     <div class="box">
-      <h3>เลขที่คำสั่งซื้อ: <?php echo $order['order_id']; ?></h3>
+      <?php
+      $birth_text = '';
+      if (!empty($order['birthdate']) && !empty($order['order_day'])) {
+          $bd_m  = (int)date('n', strtotime($order['birthdate']));
+          $ord_m = (int)date('n', strtotime($order['order_day']));
+          if ($bd_m === $ord_m) {
+            $birth_text = ' (ได้รับส่วนลดเดือนเกิด 12%)';
+          }
+      }
+      ?>
+<h3>
+  เลขที่คำสั่งซื้อ: <?php echo $order['order_id']; ?>
+  <?php if ($birth_text) { ?>
+    <span style="color:#d00; font-size:0.9em;"><?php echo $birth_text; ?></span>
+  <?php } ?>
+</h3>
+
       <p>วันสั่งซื้อ: <?php echo $order['order_day']; ?></p>
       <p>ยอดรวม: ฿<?php echo $order['total_amount']; ?></p>
       <p>ชำระเงิน: <?php echo $order['payment_status']; ?></p>
