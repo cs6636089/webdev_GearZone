@@ -8,14 +8,56 @@ require_once __DIR__ . '/../backend/connect.php';
 $prod_total = (int)$pdo->query("SELECT COUNT(*) FROM Products")->fetchColumn();
 $low_stock  = (int)$pdo->query("SELECT COUNT(*) FROM Products WHERE stock_quantity <= 5")->fetchColumn();
 
+// ========== คำสั่งซื้อ ==========
 $orders_total = (int)$pdo->query("SELECT COUNT(*) FROM Orders")->fetchColumn();
-$paid_count   = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE payment_status = 'paid'")->fetchColumn();
-$pending_pay  = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE payment_status = 'pending'")->fetchColumn();
 
-$processing   = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status IN ('pending','processing')")->fetchColumn();
-$shipped      = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status = 'shipped'")->fetchColumn();
-$completed    = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status = 'completed'")->fetchColumn();
+// กำลังดำเนินการ (อิงจาก payment_status)
+$processing = (int)$pdo->query("
+  SELECT COUNT(*) 
+  FROM Orders 
+  WHERE LOWER(payment_status) = 'paid'
+")->fetchColumn();
+
+// ชำระเงินแล้ว
+$paid_count = (int)$pdo->query("
+  SELECT COUNT(*) 
+  FROM Orders 
+  WHERE LOWER(payment_status) = 'paid'
+")->fetchColumn();
+
+// รอตรวจ/ยังไม่ชำระ
+$pending_pay = (int)$pdo->query("
+  SELECT COUNT(*) 
+  FROM Orders 
+  WHERE LOWER(payment_status) = 'pending review'
+")->fetchColumn();
+
+// ========== สถานะจัดส่ง (อิง Shipping_tracking) ==========
+$shipped = (int)$pdo->query("
+  SELECT COUNT(DISTINCT order_id)
+  FROM Shipping_tracking
+  WHERE LOWER(current_status) = 'shipped'
+")->fetchColumn();
+
+$preparing = (int)$pdo->query("
+  SELECT COUNT(DISTINCT order_id)
+  FROM Shipping_tracking
+  WHERE LOWER(current_status) = 'preparing'
+")->fetchColumn();
+
+$pending_ship = (int)$pdo->query("
+  SELECT COUNT(DISTINCT order_id)
+  FROM Shipping_tracking
+  WHERE LOWER(current_status) = 'pending'
+     OR current_status IS NULL
+     OR TRIM(current_status) = ''
+")->fetchColumn();
+
+// รวมสถานะจัดส่งทั้งหมด
+$ship_total = $shipped + $preparing + $pending_ship;
+
 ?>
+
 <!doctype html>
 <html lang="th">
 
@@ -141,16 +183,22 @@ $completed    = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status
                     <div class="num"><?= number_format($orders_total) ?></div>
                     <div style="color:#999;font-size:15px">กำลังดำเนินการ: <?= number_format($processing) ?></div>
                 </div>
+
                 <div class="kpi">
                     <h5>ชำระเงินแล้ว</h5>
                     <div class="num"><?= number_format($paid_count) ?></div>
                     <div style="color:#999;font-size:15px">รอตรวจ/ยังไม่ชำระ: <?= number_format($pending_pay) ?></div>
                 </div>
+
                 <div class="kpi">
                     <h5>สถานะจัดส่ง</h5>
-                    <div class="num"><?= number_format($shipped + $completed) ?></div>
-                    <div style="color:#999;font-size:15px">Shipped: <?= number_format($shipped) ?> · Completed: <?= number_format($completed) ?></div>
+                    <div class="num"><?= number_format($ship_total) ?></div>
+                    <div style="color:#999;font-size:15px">
+                        Shipped: <?= number_format($shipped) ?> · preparing: <?= number_format($preparing) ?> · pending: <?= number_format($pending_ship) ?>
+                    </div>
                 </div>
+
+
             </section>
 
             <!-- การ์ดลัดไปหน้าจัดการหลัก -->
@@ -167,7 +215,7 @@ $completed    = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status
                 </div>
                 <div class="card">
                     <h4>การชำระเงิน</h4>
-                    <p>ดูออเดอร์ที่ชำระแล้ว / รอตรวจ</p>
+                    <p>ดูออเดอร์ที่ชำระแล้ว</p>
                     <a class="btn" href="/~cs6636089/GearZone/backend/admin_orders_manage.php?pay=paid">ดูรายการชำระแล้ว</a>
                 </div>
             </section>

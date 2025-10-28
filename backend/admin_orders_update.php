@@ -27,24 +27,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tn   = trim($_POST['tracking_number'] ?? '');
     $ship = trim($_POST['current_status'] ?? '');
 
+    // ถ้าจ่ายแล้ว ล็อกสถานะชำระเงินไว้ที่ Paid
     if ($isPaidLocked) {
         $pay = 'Paid';
     }
 
+    // เตรียมค่าที่จะเขียนลง DB (อย่าใส่ NULL ในคอลัมน์ NOT NULL)
+    $tnForDb   = ($tn === '') ? '' : $tn;
+    $shipForDb = ($ship === '') ? 'Pending' : $ship;
+
     $pdo->beginTransaction();
     try {
+        // อัปเดตสถานะชำระเงิน
         $pdo->prepare("UPDATE Orders SET payment_status=? WHERE order_id=?")
             ->execute([$pay, $id]);
 
+        // มีแถวใน Shipping_tracking แล้วหรือยัง?
         $chk = $pdo->prepare("SELECT tracking_id FROM Shipping_tracking WHERE order_id=?");
-        if ($chk->fetch()) {
-            $pdo->prepare("UPDATE Shipping_tracking SET tracking_number=?, current_status=? WHERE order_id=?")
-                ->execute([$tn !== '' ? $tn : '', $ship ?: null, $id]);
-        } else {
-            $pdo->prepare("INSERT INTO Shipping_tracking(order_id, tracking_number, current_status) VALUES(?,?,?)")
-                ->execute([$id, $tn !== '' ? $tn : '', $ship ?: null]);
-        }
+        $chk->execute([$id]);                     // ← สำคัญ: ต้อง execute ก่อน fetch
+        $exists = (bool)$chk->fetchColumn();
 
+        if ($exists) {
+            // อัปเดตแถวเดิม — ถ้าผู้ใช้ไม่ได้กรอกเลขพัสดุใหม่ ให้คงค่าเดิมไว้
+            $pdo->prepare("
+                UPDATE Shipping_tracking
+                SET tracking_number = CASE WHEN ? = '' THEN tracking_number ELSE ? END,
+                    current_status  = ?
+                WHERE order_id = ?
+            ")->execute([$tnForDb, $tnForDb, $shipForDb, $id]);
+        } else {
+            // ยังไม่มีแถว → สร้างใหม่ (tracking_number เป็นค่าว่างได้ แต่ต้องไม่ใช่ NULL)
+            $pdo->prepare("
+                INSERT INTO Shipping_tracking(order_id, tracking_number, current_status)
+                VALUES (?,?,?)
+            ")->execute([$id, $tnForDb, $shipForDb]);
+        }
 
         $pdo->commit();
         header('Location: admin_orders_manage.php?ok=updated');
@@ -54,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('update error: ' . $e->getMessage());
     }
 }
+
 ?>
 <!doctype html>
 <html lang="th">
