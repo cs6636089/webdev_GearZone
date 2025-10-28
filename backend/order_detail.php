@@ -72,22 +72,20 @@ $stmt2->execute();
 <main class="wrap">
   <?php if ($order) { ?>
     <div class="box">
-      <?php
-      $birth_text = '';
-      if (!empty($order['birthdate']) && !empty($order['order_day'])) {
+      <h3>
+        เลขที่คำสั่งซื้อ: <?php echo $order['order_id']; ?>
+        <?php
+        if (!empty($order['birthdate']) && !empty($order['order_day'])) {
           $bd_m  = (int)date('n', strtotime($order['birthdate']));
           $ord_m = (int)date('n', strtotime($order['order_day']));
           if ($bd_m === $ord_m) {
-            $birth_text = ' (ได้รับส่วนลดเดือนเกิด 12%)';
+            echo '<span style="color:#d00; font-size:0.9em;"> (ได้รับส่วนลดเดือนเกิด 12%)</span>';
           }
-      }
-      ?>
-<h3>
-  เลขที่คำสั่งซื้อ: <?php echo $order['order_id']; ?>
-  <?php if ($birth_text) { ?>
-    <span style="color:#d00; font-size:0.9em;"><?php echo $birth_text; ?></span>
-  <?php } ?>
-</h3>
+        } else {
+          echo '<span style="color:#666; font-size:0.9em;"> (ไม่มีส่วนลดเดือนเกิด)</span>';
+        }
+        ?>
+      </h3>
 
       <p>วันสั่งซื้อ: <?php echo $order['order_day']; ?></p>
       <p>ยอดรวม: ฿<?php echo $order['total_amount']; ?></p>
