@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ->execute([$pay, $id]);
 
         $chk = $pdo->prepare("SELECT tracking_id FROM Shipping_tracking WHERE order_id=?");
-        $chk->execute([$id]);
         if ($chk->fetch()) {
             $pdo->prepare("UPDATE Shipping_tracking SET tracking_number=?, current_status=? WHERE order_id=?")
-                ->execute([$tn ?: null, $ship ?: null, $id]);
+                ->execute([$tn !== '' ? $tn : '', $ship ?: null, $id]);
         } else {
             $pdo->prepare("INSERT INTO Shipping_tracking(order_id, tracking_number, current_status) VALUES(?,?,?)")
-                ->execute([$id, $tn ?: null, $ship ?: null]);
+                ->execute([$id, $tn !== '' ? $tn : '', $ship ?: null]);
         }
+
 
         $pdo->commit();
         header('Location: admin_orders_manage.php?ok=updated');
@@ -154,10 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #2e7d32;
         }
 
-        .badge.pending {
-            background: #888;
-        }
-
         .badge.failed {
             background: #7a2222;
         }
@@ -190,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="payment_status" value="Paid">
                 <?php else: ?>
                     <select name="payment_status">
-                        <?php foreach (['Pending', 'Pending Review', 'Paid', 'Failed'] as $v): ?>
+                        <?php foreach (['Pending Review', 'Paid', 'Failed'] as $v): ?>
                             <option value="<?= $v ?>" <?= ($o['payment_status'] === $v ? 'selected' : '') ?>><?= $v ?></option>
                         <?php endforeach; ?>
                     </select>

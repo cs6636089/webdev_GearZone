@@ -13,11 +13,11 @@ if ($act === 'verify' && isset($_GET['order_id'], $_GET['set'])) {
     $set = trim($_GET['set']);
 
     $allow = [
-        'Paid'            => ['payment' => 'Paid',            'order' => 'processing'],
-        'Failed'          => ['payment' => 'Failed',          'order' => null],
-        'Pending Review'  => ['payment' => 'Pending Review',  'order' => null],
-        'Pending'         => ['payment' => 'Pending',         'order' => null],
+        'Paid'            => ['payment' => 'Paid',           'order' => 'prepare'],
+        'Failed'          => ['payment' => 'Failed',         'order' => null],
+        'Pending Review'  => ['payment' => 'Pending Review', 'order' => null],
     ];
+
     if (isset($allow[$set]) && $oid > 0) {
         $pdo->beginTransaction();
         try {
@@ -40,21 +40,25 @@ if ($act === 'verify' && isset($_GET['order_id'], $_GET['set'])) {
 
 /* ---------- Filters ---------- */
 $pay  = $_GET['pay']  ?? '';
-$stat = $_GET['stat'] ?? '';
+$ship = $_GET['ship'] ?? '';
 
-$payOpts = $pdo->query("SELECT DISTINCT payment_status FROM Orders ORDER BY payment_status")->fetchAll(PDO::FETCH_COLUMN);
-if (!$payOpts) {
-    $payOpts = ['Pending Review', 'Pending', 'Paid', 'Failed'];
-}
+$payOpts = ['Pending Review', 'Paid', 'Failed'];
+$shipOpts = ['Pending', 'preparing', 'shipped'];
 
-/* ---------- Query: include product names ---------- */
+/* ---------- Query ---------- */
+/* ---------- Filters ---------- */
+$pay  = $_GET['pay']  ?? '';
+$ship = $_GET['ship'] ?? '';
+
+$payOpts  = ['Pending Review', 'Paid', 'Failed'];
+$shipOpts = ['Pending', 'preparing', 'shipped'];
+
+/* ---------- Query ---------- */
 $sql = "SELECT
           o.order_id,
-          o.user_id,
           u.username, u.email,
           o.total_amount, o.order_day,
-          o.payment_status, o.order_status,
-          o.payment_slip,
+          o.payment_status, o.order_status, o.payment_slip,
           st.tracking_number, st.current_status,
           GROUP_CONCAT(DISTINCT p.product_name ORDER BY p.product_name SEPARATOR ', ') AS items
         FROM Orders o
@@ -63,26 +67,40 @@ $sql = "SELECT
         LEFT JOIN Order_items oi ON oi.order_id = o.order_id
         LEFT JOIN Products p ON p.product_id = oi.product_id
         WHERE 1=1";
+
 $args = [];
+
+/* กรองสถานะชำระเงิน */
 if ($pay !== '') {
     $sql .= " AND o.payment_status = ?";
     $args[] = $pay;
 }
-if ($stat !== '') {
-    $sql .= " AND o.order_status   = ?";
-    $args[] = $stat;
+
+/* กรองสถานะจัดส่ง — ใช้เฉพาะที่มีค่า current_status จริง */
+if ($ship !== '') {
+    $sql .= " AND st.current_status IS NOT NULL
+              AND LOWER(TRIM(st.current_status)) = LOWER(TRIM(?))";
+    $args[] = $ship;
 }
 
-/* ===== ให้รายการ Shipped อยู่ล่างสุด ===== */
+/* เรียงลำดับ: Pending/preparing ข้างบน, shipped ล่างสุด */
 $sql .= " GROUP BY o.order_id
           ORDER BY
-            CASE WHEN LOWER(COALESCE(st.current_status,'')) = 'shipped' THEN 2 ELSE 0 END ASC,
+            CASE 
+              WHEN LOWER(TRIM(COALESCE(st.current_status,'pending'))) = 'shipped' THEN 2
+              ELSE 0
+            END ASC,
+            CASE 
+              WHEN LOWER(o.payment_status) = 'paid' THEN 0
+              ELSE 1
+            END ASC,
             o.order_id ASC";
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($args);
 $rows = $stmt->fetchAll();
 
-/* flash */
+/* Flash message */
 $ok = $_GET['ok'] ?? '';
 $okMsg = [
     'updated' => 'อัปเดตสถานะแล้ว',
@@ -227,7 +245,6 @@ $okMsg = [
             max-width: 300px;
         }
 
-        /* Badge การชำระเงินเดิม */
         .badge {
             display: inline-block;
             padding: 3px 8px;
@@ -249,18 +266,14 @@ $okMsg = [
             background: #7a2222;
         }
 
-        /* Badge "สถานะจัดส่ง" — ทำ Shipped เป็นสีเขียว */
         .badge.ship {
             background: #2e7d32;
         }
 
-        /* <<<<<< เขียว */
         .badge.ship-pending {
             background: #f7b500;
             color: #222;
         }
-
-        /* ใช้ตอนอยากแยกสี pending */
 
         .alert {
             background: #e8f8ed;
@@ -288,7 +301,6 @@ $okMsg = [
             color: inherit;
         }
 
-        /* ติ๊กเขียวฝั่ง "จัดการ" เมื่อ Shipped แล้ว */
         .tick {
             display: inline-flex;
             width: 22px;
@@ -302,7 +314,6 @@ $okMsg = [
             line-height: 1;
         }
     </style>
-
 </head>
 
 <body class="admin-page">
@@ -317,13 +328,11 @@ $okMsg = [
             </nav>
         </div>
     </header>
-
     <main>
         <div class="admin-wrap">
             <div class="section-title" style="text-align:center; margin:0 0 10px;">
                 <h3>รายการคำสั่งซื้อทั้งหมด</h3>
             </div>
-
             <?php if ($okMsg): ?>
                 <div class="alert <?= $ok === 'error' ? 'err' : '' ?>" id="flash-ok">
                     <div><?= htmlspecialchars($okMsg) ?></div>
@@ -339,12 +348,14 @@ $okMsg = [
                             <option value="<?= htmlspecialchars($p) ?>" <?= $pay === $p ? 'selected' : '' ?>><?= htmlspecialchars($p) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <select name="stat">
-                        <option value="">สถานะออเดอร์: ทั้งหมด</option>
-                        <?php foreach (['pending', 'processing', 'shipped', 'completed', 'cancelled'] as $s): ?>
-                            <option value="<?= $s ?>" <?= $stat === $s ? 'selected' : '' ?>><?= $s ?></option>
+
+                    <select name="ship">
+                        <option value="">สถานะจัดส่ง: ทั้งหมด</option>
+                        <?php foreach ($shipOpts as $s): ?>
+                            <option value="<?= $s ?>" <?= $ship === $s ? 'selected' : '' ?>><?= $s ?></option>
                         <?php endforeach; ?>
                     </select>
+
                     <button class="btn-red" type="submit">กรอง</button>
                 </form>
             </div>
@@ -363,18 +374,14 @@ $okMsg = [
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $r): ?>
-                        <?php
+                    <?php foreach ($rows as $r):
                         $ps = (string)$r['payment_status'];
                         $isPaid = (stripos($ps, 'paid') === 0);
                         $ship = strtolower((string)$r['current_status']);
                         $isShipped = ($ship === 'shipped');
-                        ?>
+                    ?>
                         <tr>
-                            <td>
-                                <?= htmlspecialchars($r['username']) ?><br>
-                                <span class="small" style="color:#666"><?= htmlspecialchars($r['email']) ?></span>
-                            </td>
+                            <td><?= htmlspecialchars($r['username']) ?><br><span class="small" style="color:#666"><?= htmlspecialchars($r['email']) ?></span></td>
                             <td><?= htmlspecialchars($r['items'] ?: '-') ?></td>
                             <td>฿<?= number_format($r['total_amount'], 2) ?></td>
                             <td><?= htmlspecialchars($r['order_day']) ?></td>
@@ -385,40 +392,28 @@ $okMsg = [
                                     <span class="small" style="color:#999">-</span>
                                 <?php endif; ?>
                             </td>
-
-                            <!-- สถานะชำระเงิน (เดิม) -->
                             <td>
                                 <?php
                                 $payCls = $isPaid ? 'paid' : ((stripos($ps, 'fail') === 0) ? 'failed' : 'pending');
                                 ?>
                                 <span class="badge <?= $payCls ?>"><?= htmlspecialchars($ps) ?></span>
                             </td>
-
-                            <!-- สถานะจัดส่ง: Shipped = เขียว -->
                             <td>
                                 <?php if ($r['tracking_number']): ?>
-                                    <span class="badge <?= $isShipped ? 'ship' : 'ship-pending' ?>">
-                                        <?= htmlspecialchars($r['current_status']) ?>
-                                    </span><br>
+                                    <span class="badge <?= $isShipped ? 'ship' : 'ship-pending' ?>"><?= htmlspecialchars($r['current_status']) ?></span><br>
                                     <span class="small" style="color:#666">TN: <?= htmlspecialchars($r['tracking_number']) ?></span>
                                 <?php else: ?>
                                     <span class="badge pending">no tracking</span>
                                 <?php endif; ?>
                             </td>
-
-                            <!-- จัดการ: ถ้า Shipped → ติ๊กอย่างเดียว, ถ้า Paid แล้ว → เหลือปุ่มอัปเดต -->
                             <td>
                                 <?php if ($isShipped): ?>
                                     <span class="tick">✓</span>
                                 <?php else: ?>
                                     <a class="btn-red" href="admin_orders_update.php?order_id=<?= (int)$r['order_id'] ?>">อัปเดต</a>
                                     <?php if (!$isPaid): ?>
-                                        <a class="btn-green"
-                                            href="admin_orders_manage.php?act=verify&set=Paid&order_id=<?= (int)$r['order_id'] ?>"
-                                            onclick="return confirm('ยืนยันการชำระเงินออเดอร์นี้ ?')">ยืนยันชำระ</a>
-                                        <a class="btn-dark"
-                                            href="admin_orders_manage.php?act=verify&set=Failed&order_id=<?= (int)$r['order_id'] ?>"
-                                            onclick="return confirm('มาร์คไม่ผ่านออเดอร์นี้ ?')">ไม่ผ่าน</a>
+                                        <a class="btn-green" href="admin_orders_manage.php?act=verify&set=Paid&order_id=<?= (int)$r['order_id'] ?>" onclick="return confirm('ยืนยันการชำระเงินออเดอร์นี้ ?')">ยืนยันชำระ</a>
+                                        <a class="btn-dark" href="admin_orders_manage.php?act=verify&set=Failed&order_id=<?= (int)$r['order_id'] ?>" onclick="return confirm('มาร์คไม่ผ่านออเดอร์นี้ ?')">ไม่ผ่าน</a>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </td>
@@ -428,12 +423,10 @@ $okMsg = [
             </table>
         </div>
     </main>
-
     <footer class="footer">
         <div class="footer-left">GEARZONE</div>
         <div class="footer-right">© 2025 GearZone</div>
     </footer>
-
     <script>
         setTimeout(() => {
             const el = document.getElementById('flash-ok');
