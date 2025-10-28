@@ -1,7 +1,20 @@
 <?php
-require_once __DIR__ . '/../backend/config/auth.php';
-requireAdmin();                                   // ต้องเป็นแอดมินเท่านั้น
-$admin = $_SESSION['user'];
+// frontend/admin.php
+require_once __DIR__ . '/../backend/config/auth.php'; // ภายในมี session_start() แล้ว
+requireAdmin();
+require_once __DIR__ . '/../backend/connect.php';
+
+// ===== Summary (ตัวเลขบนแดชบอร์ด) =====
+$prod_total = (int)$pdo->query("SELECT COUNT(*) FROM Products")->fetchColumn();
+$low_stock  = (int)$pdo->query("SELECT COUNT(*) FROM Products WHERE stock_quantity <= 5")->fetchColumn();
+
+$orders_total = (int)$pdo->query("SELECT COUNT(*) FROM Orders")->fetchColumn();
+$paid_count   = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE payment_status = 'paid'")->fetchColumn();
+$pending_pay  = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE payment_status = 'pending'")->fetchColumn();
+
+$processing   = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status IN ('pending','processing')")->fetchColumn();
+$shipped      = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status = 'shipped'")->fetchColumn();
+$completed    = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status = 'completed'")->fetchColumn();
 ?>
 <!doctype html>
 <html lang="th">
@@ -9,42 +22,156 @@ $admin = $_SESSION['user'];
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>GearZone - แอดมิน</title>
+    <title>Admin Dashboard - GearZone</title>
     <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
+    <style>
+        /* สไตล์เฉพาะหน้านี้เท่านั้น ไม่กระทบไฟล์อื่น */
+        body.admin-page main {
+            padding: 32px 16px 80px;
+        }
+
+        .dash-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 8px 0 24px;
+        }
+
+        .kpi {
+            background: #fff;
+            color: #111;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+            padding: 16px 18px;
+        }
+
+        .kpi h5 {
+            margin: 0 0 6px;
+            color: #666;
+            font-weight: 700;
+        }
+
+        .kpi .num {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            color: #111;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card h4 {
+            margin: 8px 0 6px;
+        }
+
+        .card p {
+            color: #666;
+            margin: 0 0 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #ff3b2f;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #cc2f25;
+        }
+
+        @media (max-width:768px) {
+            .cards {
+                gap: 14px;
+            }
+        }
+    </style>
 </head>
 
-<body>
+<body class="admin-page">
+    <!-- Header เดิมของโปรเจ็กต์ -->
     <header class="header">
         <div class="container navbar">
             <div class="brand">GEARZONE</div>
-            <nav class="navlinks" aria-label="Top Links">
+            <nav class="navlinks">
                 <a href="/~cs6636089/GearZone/frontend/admin.php" class="active">แดชบอร์ด</a>
-                <a href="/~cs6636089/GearZone/frontend/categories.html">หมวดหมู่</a>
+                <a href="/~cs6636089/GearZone/backend/admin_products.php">สินค้า</a>
+                <a href="/~cs6636089/GearZone/backend/admin_orders_manage.php">คำสั่งซื้อ</a>
                 <a href="/~cs6636089/GearZone/backend/logout.php">ออกจากระบบ</a>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <div class="section-title">
-            <h3>ยินดีต้อนรับ ผู้ดูแลระบบ: <?php echo htmlspecialchars($admin['username']); ?></h3>
-            <p>ศูนย์ควบคุมระบบเบื้องต้น</p>
-        </div>
+    <main>
+        <div class="dash-wrap">
+            <div class="section-title" style="text-align:center; margin: 0 0 12px;">
+                <h3>แผงควบคุมผู้ดูแลระบบ</h3>
+                <p>จัดการสินค้า คำสั่งซื้อ และสถานะการชำระเงิน</p>
+            </div>
 
-        <section class="features">
-            <div class="feature">
-                <h4>จัดการสินค้า</h4>
-                <p class="small"><a class="btn" href="/~cs6636089/GearZone/backend/admin/products_crud.php">เปิดหน้า</a></p>
-            </div>
-            <div class="feature">
-                <h4>คำสั่งซื้อทั้งหมด</h4>
-                <p class="small"><a class="btn" href="/~cs6636089/GearZone/backend/admin/orders_manage.php">เปิดหน้า</a></p>
-            </div>
-            <div class="feature">
-                <h4>รายงานยอดขาย</h4>
-                <p class="small"><a class="btn" href="/~cs6636089/GearZone/frontend/reports.html">ดูรายงาน</a></p>
-            </div>
-        </section>
+            <!-- KPI แถวบน -->
+            <section class="kpis">
+                <div class="kpi">
+                    <h5>สินค้าทั้งหมด</h5>
+                    <div class="num"><?= number_format($prod_total) ?></div>
+                    <div style="color:#999;font-size:13px">คงเหลือต่ำ (&le;5): <?= number_format($low_stock) ?></div>
+                </div>
+                <div class="kpi">
+                    <h5>คำสั่งซื้อทั้งหมด</h5>
+                    <div class="num"><?= number_format($orders_total) ?></div>
+                    <div style="color:#999;font-size:13px">กำลังดำเนินการ: <?= number_format($processing) ?></div>
+                </div>
+                <div class="kpi">
+                    <h5>ชำระเงินแล้ว</h5>
+                    <div class="num"><?= number_format($paid_count) ?></div>
+                    <div style="color:#999;font-size:13px">รอตรวจ/ยังไม่ชำระ: <?= number_format($pending_pay) ?></div>
+                </div>
+                <div class="kpi">
+                    <h5>สถานะจัดส่ง</h5>
+                    <div class="num"><?= number_format($shipped + $completed) ?></div>
+                    <div style="color:#999;font-size:13px">Shipped: <?= number_format($shipped) ?> · Completed: <?= number_format($completed) ?></div>
+                </div>
+            </section>
+
+            <!-- การ์ดลัดไปหน้าจัดการหลัก -->
+            <section class="cards">
+                <div class="card">
+                    <h4>จัดการสินค้า</h4>
+                    <p>เพิ่ม/แก้ไข/ลบ และอัปเดตสต๊อก</p>
+                    <a class="btn" href="/~cs6636089/GearZone/backend/admin_products.php">เปิดหน้า</a>
+                </div>
+                <div class="card">
+                    <h4>คำสั่งซื้อทั้งหมด</h4>
+                    <p>ตรวจรายการ ปรับสถานะ จัดการขนส่ง</p>
+                    <a class="btn" href="/~cs6636089/GearZone/backend/admin_orders_manage.php">เปิดหน้า</a>
+                </div>
+                <div class="card">
+                    <h4>การชำระเงิน</h4>
+                    <p>ดูออเดอร์ที่ชำระแล้ว / รอตรวจ</p>
+                    <a class="btn" href="/~cs6636089/GearZone/backend/admin_orders_manage.php?pay=paid">ดูรายการชำระแล้ว</a>
+                </div>
+            </section>
+        </div>
     </main>
 
     <footer class="footer">
