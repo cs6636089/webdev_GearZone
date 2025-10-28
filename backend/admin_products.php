@@ -256,6 +256,13 @@ $okMsg = [
         <div class="footer-left">GEARZONE</div>
         <div class="footer-right">© 2025 GearZone</div>
     </footer>
+
+    <script>
+        setTimeout(() => {
+            const el = document.getElementById('flash-ok');
+            el && el.remove();
+        }, 3000);
+    </script>
 </body>
 
 </html>
