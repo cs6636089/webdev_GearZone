@@ -83,62 +83,61 @@ if (isset($_SESSION['user_id'])) {
     foreach($cart as $pid=>$it){ $grand = $grand + ($it['price'] * $it['qty']); }
   ?>
 <?php
-  // รวมราคาสินค้าในตะกร้า
+  // รวมราคาสินค้า
   $grand = 0;
   foreach($cart as $pid=>$it){ $grand += ($it['price'] * $it['qty']); }
 
-  // ===== ส่วนลดเดือนเกิด 12% =====
-  $birth_ok = false;
-  $discount = 0;
-  $final    = $grand;
-
+  // ส่วนลดเดือนเกิด
+  $birth_ok = false; $discount = 0.0;
   $u = $pdo->prepare("SELECT birthdate FROM Users WHERE user_id = ?");
-  $u->execute([ $user_id ]);
+  $u->execute([$user_id]);
   $ud = $u->fetch(PDO::FETCH_ASSOC);
-
   if ($ud && !empty($ud['birthdate'])) {
     $bd_m  = (int)date('n', strtotime($ud['birthdate']));
     $now_m = (int)date('n');
-    if ($bd_m === $now_m) {
-      $birth_ok = true;
-      $discount = round($grand * 0.12, 2);
-      $final    = max(0, $grand - $discount);
+    if ($bd_m === $now_m) { $birth_ok = true; $discount = round($grand*0.12,2); }
+  }
+
+  // โปรชิ้นที่ 2 ลด 50% 
+  $promo2_discount = 0.0;
+  foreach ($cart as $pid => $it) {
+    $q = $pdo->prepare("SELECT stock_quantity FROM Products WHERE product_id = ?");
+    $q->execute([$pid]);
+    $row = $q->fetch(PDO::FETCH_ASSOC);
+    $stock_now = $row ? (int)$row['stock_quantity'] : 0;
+    if ($stock_now > 40) {
+      $pairs = intdiv((int)$it['qty'], 2);
+      $promo2_discount += $pairs * 0.5 * (float)$it['price'];
     }
   }
+
+  $final_total = max(0, $grand - $discount - $promo2_discount);
 ?>
 
-<h4>สรุปรายการ</h4>
-<?php foreach($cart as $pid=>$it){ ?>
-  <div class="line">
-    <div><?php echo $it['name']; ?> x <?php echo $it['qty']; ?></div>
-    <div>฿<?php echo ($it['price']*$it['qty']); ?></div>
-  </div>
-<?php } ?>
-
-<div class="line">
-  <div>รวมสินค้า (Subtotal)</div>
-  <div>฿<?php echo $grand; ?></div>
+<div class="line" style="font-weight:bold;">
+  <div>รวมทั้งสิ้น</div>
+  <div>฿<?php echo number_format($grand,2); ?></div>
 </div>
-
 <?php if ($birth_ok) { ?>
-  <div class="line" style="color:#d00;">
+  <div class="line">
     <div>ส่วนลดเดือนเกิด 12%</div>
-    <div>-฿<?php echo $discount; ?></div>
-  </div>
-<?php } ?>
-
+    <div>-฿<?php echo number_format($discount,2); ?></div>
+  </div><?php } ?>
+<?php if ($promo2_discount > 0) { ?>
+  <div class="line"><div>โปรชิ้นที่ 2 ลด 50%</div>
+  <div>-฿<?php echo number_format($promo2_discount,2); ?></div>
+</div><?php } ?>
 <div class="line" style="font-weight:bold;">
   <div>ยอดสุทธิ</div>
-  <div>฿<?php echo $final; ?></div>
+  <div>฿<?php echo number_format($final_total,2); ?></div>
 </div>
 
-<h4 style="margin-top:16px;">ที่อยู่จัดส่ง</h4>
 <form action="/~cs6636089/GearZone/backend/place_order.php" method="post">
   <textarea name="shipping_address" rows="5" placeholder="ระบุที่อยู่จัดส่ง" required></textarea>
-  <!-- ส่งยอดสุทธิไปด้วย (แต่บน server ควรคำนวณซ้ำเพื่อความชัวร์) -->
-  <input type="hidden" name="total_amount" value="<?php echo $final; ?>">
+  <input type="hidden" name="total_amount" value="<?php echo $final_total; ?>">
   <button class="btn" type="submit">ยืนยันสั่งซื้อ</button>
 </form>
+
   <?php } ?>
 </main>
 

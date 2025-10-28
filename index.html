@@ -12,12 +12,10 @@
 <body>
     <header class="header">
         <div class="container navbar">
-        <div class="brand">GEARZONE</div>
-        <div id="navbar-container"></div>
-        </div>
+            <div class="brand">GEARZONE</div>
+            <div id="navbar-container"></div>
+            </div>
     </header>
-
-
     <main>
         <section class="hero container">
             <span class="hot">HOT DEALS 2025</span>
@@ -31,61 +29,9 @@
 
         <section class="container" id="popular">
             <div class="section-title">
-                <h3>สินค้ายอดนิยม</h3>
-                <p>อุปกรณ์เกมมิ่งที่ได้รับความนิยมสูงสุด</p>
-            </div>
-
-            <div class="grid" id="product-grid">
-                <!-- ตัวอย่างสินค้าเว้นรูปไว้ -->
-                <article class="card">
-                    <div class="thumb">
-                        <img src="placeholder.png" alt="ชื่อสินค้า">
-                    </div>
-                    <div class="meta">
-                        <h4>ชื่อสินค้า</h4>
-                        <div class="price-row">
-                            <div class="price">฿0</div>
-                            <a class="buy" href="#">สั่งซื้อ</a>
-                        </div>
-                    </div>
-                </article>
-                <article class="card">
-                    <div class="thumb">
-                        <img src="placeholder.png" alt="ชื่อสินค้า">
-                    </div>
-                    <div class="meta">
-                        <h4>ชื่อสินค้า</h4>
-                        <div class="price-row">
-                            <div class="price">฿0</div>
-                            <a class="buy" href="#">สั่งซื้อ</a>
-                        </div>
-                    </div>
-                </article>
-                <article class="card">
-                    <div class="thumb">
-                        <img src="placeholder.png" alt="ชื่อสินค้า">
-                    </div>
-                    <div class="meta">
-                        <h4>ชื่อสินค้า</h4>
-                        <div class="price-row">
-                            <div class="price">฿0</div>
-                            <a class="buy" href="#">สั่งซื้อ</a>
-                        </div>
-                    </div>
-                </article>
-                <article class="card">
-                    <div class="thumb">
-                        <img src="placeholder.png" alt="ชื่อสินค้า">
-                    </div>
-                    <div class="meta">
-                        <h4>ชื่อสินค้า</h4>
-                        <div class="price-row">
-                            <div class="price">฿0</div>
-                            <a class="buy" href="#">สั่งซื้อ</a>
-                        </div>
-                    </div>
-                </article>
-                <!-- เพิ่มการ์ดตามจำนวนสินค้า -->
+                <h3>โปรโมชั่นพิเศษ ชิ้นที่ 2 ลด 50%</h3>
+                </div>
+                <div class="grid promo-grid" id="product-grid"></div>
             </div>
         </section>
 
@@ -94,7 +40,6 @@
                 <h3 id="promos">บริการของเรา</h3>
                 <p>บริการที่คัดมาเพื่อลูกค้าเกมเมอร์</p>
             </div>
-
             <div class="features">
                 <div class="feature">
                     <h4>จัดส่งรวดเร็ว</h4>
@@ -121,19 +66,33 @@
         <div class="footer-right">&copy; 2025 GearZone. สงวนลิขสิทธิ์.</div>
     </footer>
 </body>
+
 <script>
-  var xhr = new XMLHttpRequest();
+  // Navbar 
+  (function(){
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        document.getElementById("navbar-container").innerHTML = xhr.responseText;
+      }
+    };
+    xhr.open("GET", "/~cs6636089/GearZone/backend/navbar.php", true);
+    xhr.withCredentials = true;
+    xhr.send();
+  })();
 
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      document.getElementById("navbar-container").innerHTML = xhr.responseText;
-    }
-  };
-  xhr.open("GET", "/~cs6636089/GearZone/backend/navbar.php", true);
-  xhr.withCredentials = true; //ส่ง session cookie ไปด้วย
-  xhr.send();
+  // โหลดการ์ดโปรค้างสต็อก
+  (function(){
+    var xhr2 = new XMLHttpRequest();
+    xhr2.onreadystatechange = function() {
+      if (xhr2.readyState === 4 && xhr2.status === 200) {
+        document.getElementById("product-grid").innerHTML = xhr2.responseText;
+      }
+    };
+    xhr2.open("GET", "/~cs6636089/GearZone/backend/promos_overstock.php", true);
+    xhr2.withCredentials = true;
+    xhr2.send();
+  })();
 </script>
-
-
 
 </html>

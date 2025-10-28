@@ -643,3 +643,95 @@ body.categories-page .category-grid .card p {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ====== Promo Grid ====== */
+#product-grid.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 22px;
+  margin-top: 14px;
+}
+
+.promo-card {
+  position: relative;
+  background: #fff;
+  color: #333;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.promo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+.promo-card .ribbon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #e31837;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.promo-card .thumb {
+  aspect-ratio: 4 / 3; /* ให้ภาพสูงเท่ากันทุกใบ */
+  background: #f6f6f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.promo-card .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.promo-card .meta {
+  padding: 12px 14px 14px;
+}
+.promo-card .title {
+  margin: 0 0 6px;
+  font-size: 16px;
+  line-height: 1.35;
+  min-height: 42px; /* 2 บรรทัด กันกระโดด */
+}
+
+.promo-card .muted {
+  color: #777;
+  font-size: 13px;
+}
+
+.promo-card .price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.promo-card .price {
+  color: #d50000;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.promo-card .btn-buy {
+  display: inline-block;
+  background: #e31837;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+}
+.promo-card .btn-buy:hover { opacity: .9; }
