@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../backend/connect.php"; 
+include "./connect.php";
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
   $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนเปิดตะกร้า";

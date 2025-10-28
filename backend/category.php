@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../backend/connect.php"; 
+include "./connect.php";
 
 $cat_id = isset($_GET['id']) ? $_GET['id'] : '';
 

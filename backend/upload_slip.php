@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../backend/connect.php"; 
+include "./connect.php";
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
   header("Location: /~cs6636089/GearZone/frontend/login.html");

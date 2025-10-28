@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../backend/connect.php";
+include "./connect.php";
 
 if (isset($_SESSION['user_id'])) {
   $user_id = $_SESSION['user_id'];

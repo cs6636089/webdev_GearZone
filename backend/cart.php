@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../backend/connect.php";
+include "./connect.php";
 
 $action = "";
 if (isset($_POST['action'])) {
