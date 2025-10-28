@@ -134,22 +134,22 @@ $completed    = (int)$pdo->query("SELECT COUNT(*) FROM Orders WHERE order_status
                 <div class="kpi">
                     <h5>สินค้าทั้งหมด</h5>
                     <div class="num"><?= number_format($prod_total) ?></div>
-                    <div style="color:#999;font-size:13px">คงเหลือต่ำ (&le;5): <?= number_format($low_stock) ?></div>
+                    <div style="color:#999;font-size:15px">คงเหลือต่ำ (&le;5): <?= number_format($low_stock) ?></div>
                 </div>
                 <div class="kpi">
                     <h5>คำสั่งซื้อทั้งหมด</h5>
                     <div class="num"><?= number_format($orders_total) ?></div>
-                    <div style="color:#999;font-size:13px">กำลังดำเนินการ: <?= number_format($processing) ?></div>
+                    <div style="color:#999;font-size:15px">กำลังดำเนินการ: <?= number_format($processing) ?></div>
                 </div>
                 <div class="kpi">
                     <h5>ชำระเงินแล้ว</h5>
                     <div class="num"><?= number_format($paid_count) ?></div>
-                    <div style="color:#999;font-size:13px">รอตรวจ/ยังไม่ชำระ: <?= number_format($pending_pay) ?></div>
+                    <div style="color:#999;font-size:15px">รอตรวจ/ยังไม่ชำระ: <?= number_format($pending_pay) ?></div>
                 </div>
                 <div class="kpi">
                     <h5>สถานะจัดส่ง</h5>
                     <div class="num"><?= number_format($shipped + $completed) ?></div>
-                    <div style="color:#999;font-size:13px">Shipped: <?= number_format($shipped) ?> · Completed: <?= number_format($completed) ?></div>
+                    <div style="color:#999;font-size:15px">Shipped: <?= number_format($shipped) ?> · Completed: <?= number_format($completed) ?></div>
                 </div>
             </section>
 
