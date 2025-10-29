@@ -177,8 +177,8 @@ $reports = $st->fetchAll();
             <div class="brand">GEARZONE</div>
             <nav class="navlinks">
                 <a href="/~cs6636089/GearZone/frontend/admin.php">แดชบอร์ด</a>
-                <a href="/~cs6636089/GearZone/backend/admin_orders_manage.php">คำสั่งซื้อ</a>
                 <a href="/~cs6636089/GearZone/backend/admin_products.php">สินค้า</a>
+                <a href="/~cs6636089/GearZone/backend/admin_orders_manage.php">คำสั่งซื้อ</a>
                 <a href="/~cs6636089/GearZone/backend/admin_reports.php">รายงาน</a>
                 <a href="/~cs6636089/GearZone/backend/logout.php">ออกจากระบบ</a>
             </nav>
