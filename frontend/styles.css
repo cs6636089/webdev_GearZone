@@ -485,6 +485,38 @@ body.login-page .login-card .login-footer a:hover {
   text-decoration: underline;
 }
 
+/* --- Fix: ให้ checkbox ไม่โดนกฎ input ทั่วไป --- */
+body.login-page .login-card .form-group input[type="checkbox"],
+.tos-label input[type="checkbox"] {
+  width: auto;
+  padding: 0;
+  border: none;
+  height: 18px;              /* ให้ขนาดพอดี */
+  accent-color: #ff3b2f;     /* สีแดงธีม */
+  cursor: pointer;
+}
+
+/* กล่อง "ยอมรับเงื่อนไข" ให้เรียงแนวนอนสวย ๆ */
+.tos-box { 
+  text-align: left; 
+  margin: 8px 0 14px; 
+}
+
+.tos-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.tos-link { color: #ff3b2f; text-decoration: none; }
+.tos-link:hover { text-decoration: underline; }
+
+
+
+
 /* ==================== Register Page ==================== */
 /* ===== Register = Login style (override) ===== */
 body.register-page {

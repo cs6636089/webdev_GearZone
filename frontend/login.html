@@ -30,24 +30,36 @@
             <div class="login-card">
                 <h3>เข้าสู่ระบบ</h3>
                 <p style="text-align:center; color:#666;">กรอกข้อมูลเพื่อเข้าสู่ระบบ</p>
+
                 <form action="/~cs6636089/GearZone/backend/login.php" method="post" autocomplete="on">
                     <div class="form-group">
                         <label for="email">อีเมล</label>
-                        <input id="email" name="email" type="email" placeholder="your@email.com" required>
+                        <input id="email" name="email" type="email" placeholder="your@email.com" required
+                            inputmode="email" autocomplete="email">
                     </div>
 
                     <div class="form-group">
                         <label for="password">รหัสผ่าน</label>
-                        <input id="password" name="password" type="password" placeholder="••••••••" required>
+                        <input id="password" name="password" type="password" placeholder="••••••••" required
+                            minlength="6" pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}" autocomplete="current-password"
+                            title="อย่างน้อย 6 ตัวอักษร และต้องมีทั้งตัวอักษรและตัวเลข">
+                        <small style="color:#666; display:block; margin-top:4px;">
+                            อย่างน้อย 6 ตัวอักษร และต้องมีทั้งตัวอักษรและตัวเลข
+                        </small>
+                    </div>
+                    <div class="form-group tos-box">
+                        <label for="tos" class="tos-label">
+                            <input type="checkbox" id="tos" required>
+                            ฉันยอมรับ <a href="#" class="tos-link">เงื่อนไขการใช้งาน</a>
+                        </label>
                     </div>
 
-                    <!-- <div class="form-options">
-                        <a href="#" class="forgot">ลืมรหัสผ่าน?</a>
-                    </div> -->
+
 
                     <button type="submit" class="btn">เข้าสู่ระบบ</button>
                     <p style="text-align:center;">ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a></p>
                 </form>
+
             </div>
         </section>
     </main>

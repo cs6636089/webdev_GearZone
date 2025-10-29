@@ -6,13 +6,14 @@ ini_set('session.use_only_cookies', '1');
 $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
 
 session_set_cookie_params([
-  'lifetime' => 0,
-  'path'     => '/',
-  'domain'   => '',
-  'secure'   => $secure,
+  'lifetime' => 3600, // 1 ชั่วโมง
+  'path' => '/',
+  'domain' => '',
+  'secure' => $secure,
   'httponly' => true,
   'samesite' => 'Lax',
 ]);
+
 
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
