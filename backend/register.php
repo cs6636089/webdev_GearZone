@@ -1,61 +1,41 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require_once __DIR__ . '/config/session.php';
-require_once __DIR__ . '/connect.php';
+session_start();
+include "./connect.php";
 
-$username   = trim($_POST['username'] ?? '');
-$password   = trim($_POST['password'] ?? '');
-$confirm_pw = trim($_POST['confirm-password'] ?? '');
-$email      = trim($_POST['email'] ?? '');
-$first      = trim($_POST['first_name'] ?? '');
-$last       = trim($_POST['last_name'] ?? '');
-$phone      = trim($_POST['phone'] ?? '');
-$address    = trim($_POST['address'] ?? '');
+$username   = $_POST['username'] ?? '';
+$password   = $_POST['password'] ?? '';
+$confirm_pw = $_POST['confirm-password'] ?? '';
+$email      = $_POST['email'] ?? '';
+$first      = $_POST['first_name'] ?? '';
+$last       = $_POST['last_name'] ?? '';
+$phone      = $_POST['phone'] ?? '';
+$address    = $_POST['address'] ?? '';
+$birthdate  = $_POST['birthdate'] ?? ''; 
 
-if ($username === '' || $password === '' || $email === '') {
-    header('Location: /~cs6636089/GearZone/frontend/register.html?error=empty');
-    exit;
-}
-if ($password !== $confirm_pw) {
-    header('Location: /~cs6636089/GearZone/frontend/register.html?error=pwmismatch');
-    exit;
+
+if ($username == '' || $password == '' || $email == '') {
+  echo "<script>alert('กรุณากรอกข้อมูลให้ครบ'); history.back();</script>";
+  exit;
 }
 
-$dup = $pdo->prepare("SELECT COUNT(*) FROM Users WHERE username=:u OR email=:e");
-$dup->execute([':u' => $username, ':e' => $email]);
-if ($dup->fetchColumn() > 0) {
-    header('Location: /~cs6636089/GearZone/frontend/register.html?error=duplicate');
-    exit;
+if ($password != $confirm_pw) {
+  echo "<script>alert('รหัสผ่านไม่ตรงกัน'); history.back();</script>";
+  exit;
 }
 
-// $hash = password_hash($password, PASSWORD_DEFAULT);
-$hash = $password;
+$check = $pdo->prepare("SELECT * FROM Users WHERE username=? OR email=?");
+$check->execute([$username, $email]);
+if ($check->fetch()) {
+  echo "<script>alert('ชื่อผู้ใช้หรืออีเมลนี้ถูกใช้แล้ว'); history.back();</script>";
+  exit;
+}
 
-$ins = $pdo->prepare(
-    "INSERT INTO Users(username,password,email,first_name,last_name,phone,address,is_admin)
-  VALUES(:u,:p,:e,:f,:l,:ph,:ad,0)"
-);
-$ins->execute([
-    ':u' => $username,
-    ':p' => $hash,
-    ':e' => $email,
-    ':f' => $first,
-    ':l' => $last,
-    ':ph' => $phone,
-    ':ad' => $address
-]);
+$stmt = $pdo->prepare("
+  INSERT INTO Users (username, password, email, first_name, last_name, phone, address, birthdate, is_admin)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+");
+$stmt->execute([$username, $password, $email, $first, $last, $phone, $address, $birthdate]);
 
-$_SESSION['user'] = [
-    'id'       => (int)$pdo->lastInsertId(),
-    'username' => $username,
-    'email'    => $email,
-    'first'    => $first,
-    'last'     => $last,
-    'phone'    => $phone,
-    'address'  => $address,
-    'is_admin' => 0
-];
-
-header('Location: /~cs6636089/GearZone/frontend/login.html?success=1');
+echo "<script>alert('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ'); window.location.href='/~cs6636089/GearZone/frontend/login.html';</script>";
 exit;
+?>
