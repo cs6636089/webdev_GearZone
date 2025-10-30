@@ -15,8 +15,8 @@ if (ini_get('session.use_cookies')) {
     );
 }
 
-// ทำลายเซสชันฝั่งเซิร์ฟเวอร์
-session_destroy();
+session_unset();   // ล้างตัวแปร session ทั้งหมด
+session_destroy(); // ทำลาย session ทั้งระบบ
 
 header("Location: /~cs6636089/GearZone/index.html");
 exit;
