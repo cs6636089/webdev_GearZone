@@ -116,202 +116,287 @@ $okMsg = [
     <title>Admin: คำสั่งซื้อ</title>
     <link rel="stylesheet" href="/~cs6636089/GearZone/frontend/styles.css">
     <style>
+        /* ===== พื้นหลัง/ระยะขอบหน้า ===== */
+        body.admin-page {
+            background: #d9d5d5
+        }
+
         body.admin-page main {
-            padding: 32px 16px 70px;
+            padding: 32px 16px 80px
         }
 
         .admin-wrap {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto
         }
 
+        /* ===== หัวข้อใหญ่ สีแดง + เส้นใต้ ===== */
+        .section-title {
+            margin: 0 0 8px;
+            text-align: center
+        }
+
+        .section-title h3 {
+            display: inline-block;
+            margin: 0;
+            color: #e7332f;
+            font-weight: 900;
+            font-size: 44px;
+            letter-spacing: .5px
+        }
+
+        .section-title h3::after {
+            content: "";
+            display: block;
+            width: 180px;
+            height: 6px;
+            border-radius: 6px;
+            margin: 10px auto 0;
+            background: #e7332f;
+        }
+
+        /* ===== แถบกรอง (แคปซูลลอยกลาง) ===== */
         .admin-card {
+            max-width: 930px;
+            margin: 18px auto 14px;
             background: #fff;
             color: #111;
-            border-radius: 14px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
-            padding: 14px 18px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .12);
+            padding: 12px 14px
         }
 
         .admin-card form {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
+            gap: 10px;
             justify-content: center;
+            align-items: center
         }
 
         .admin-card select {
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            min-width: 240px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #e3e3e3;
             background: #fff;
             color: #111;
-            font-size: 15px;
-        }
-
-        .btn-red,
-        .btn-gray,
-        .btn-green,
-        .btn-dark {
-            display: inline-block;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, .05);
+            font-size: 15px
         }
 
         .btn-red {
             background: #ff3b2f;
             color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, .09)
         }
 
         .btn-red:hover {
-            background: #cc2f25;
+            background: #d62a23
+        }
+
+        /* ===== ตาราง ===== */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            color: #111;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .10)
+        }
+
+        .admin-table thead th {
+            background: #fafafa;
+            color: #ff3b2f;
+            font-weight: 800;
+            font-size: 15px;
+            padding: 12px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left
+        }
+
+        .admin-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            font-size: 15px
+        }
+
+        .admin-table tbody tr:hover {
+            background: #f8f8f8
+        }
+
+        /* จัดความกว้าง/การจัดวางให้นิ่ง */
+        .admin-table th:nth-child(3),
+        .admin-table td:nth-child(3) {
+            text-align: right;
+            width: 120px
+        }
+
+        .admin-table td:nth-child(2) {
+            max-width: 420px;
+            word-break: break-word
+        }
+
+        /* ===== ปุ่ม/ชิปทรงแคปซูล ===== */
+        .btn-gray,
+        .btn-green,
+        .btn-dark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .05)
         }
 
         .btn-gray {
-            background: #ddd;
-            color: #111;
+            background: #e6e6e6;
+            color: #111
         }
 
         .btn-gray:hover {
-            background: #ccc;
+            background: #d9d9d9
         }
 
         .btn-green {
             background: #2e7d32;
-            color: #fff;
+            color: #fff
         }
 
         .btn-green:hover {
-            background: #246427;
+            background: #256429
         }
 
         .btn-dark {
             background: #444;
-            color: #fff;
+            color: #fff
         }
 
         .btn-dark:hover {
-            background: #333;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            color: #111;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, .05);
-        }
-
-        .admin-table th,
-        .admin-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        .admin-table th {
-            color: #ff3b2f;
-            font-weight: 700;
-            background: #fafafa;
-            font-size: 15px;
-        }
-
-        .admin-table td {
-            font-size: 15px;
-            line-height: 1.4;
-        }
-
-        .admin-table tbody tr:hover {
-            background: #f9f9f9;
-        }
-
-        .admin-table td:nth-child(3) {
-            text-align: right;
-        }
-
-        .admin-table td:nth-child(2) {
-            word-break: break-word;
-            max-width: 300px;
+            background: #333
         }
 
         .badge {
-            display: inline-block;
-            padding: 3px 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
             border-radius: 999px;
             font-size: 13px;
-            font-weight: 500;
-            color: #fff;
-        }
-
-        .badge.pending {
-            background: #888;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            color: #fff
         }
 
         .badge.paid {
-            background: #156a2f;
+            background: #1a7c35
+        }
+
+        .badge.pending {
+            background: #8f8f8f
         }
 
         .badge.failed {
-            background: #7a2222;
+            background: #7a2222
         }
 
         .badge.ship {
-            background: #2e7d32;
+            background: #2e7d32
         }
 
         .badge.ship-pending {
-            background: #f7b500;
-            color: #222;
+            background: #f0b400;
+            color: #222
         }
 
+        /* tracking ตัวเทาเล็กใต้ชิป */
+        .admin-table td .small {
+            display: inline-block;
+            margin-top: 4px
+        }
+
+        /* ติ๊กเขียวเมื่อ Shipped */
+        .tick {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            background: #2e7d32;
+            color: #fff;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px
+        }
+
+        /* แจ้งเตือนด้านบน */
         .alert {
             background: #e8f8ed;
             color: #0f5132;
             border: 1px solid #badbcc;
             border-radius: 10px;
             padding: 10px 14px;
-            margin-bottom: 14px;
+            margin: 10px auto 16px;
+            max-width: 930px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center
         }
 
         .alert.err {
             background: #fbeaea;
             color: #842029;
-            border-color: #f5c2c7;
+            border-color: #f5c2c7
         }
 
         .alert .close {
             background: transparent;
             border: none;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
-            color: inherit;
+            color: inherit
         }
 
-        .tick {
-            display: inline-flex;
-            width: 22px;
-            height: 22px;
-            border-radius: 999px;
-            background: #2e7d32;
-            color: #fff;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            line-height: 1;
+        /* ปุ่มในคอลัมน์จัดการให้อยู่บรรทัดเดียวกัน */
+        .admin-table td:last-child {
+            white-space: nowrap;
+            /* ห้ามตัดบรรทัด */
+        }
+
+        .admin-table td:last-child a,
+        .admin-table td:last-child .btn-red,
+        .admin-table td:last-child .btn-green,
+        .admin-table td:last-child .btn-dark {
+            display: inline-block;
+            /* เรียงแนวนอน */
+            vertical-align: middle;
+            /* จัดแนวกลางแนวตั้ง */
+            margin-right: 6px;
+            /* เว้นระยะห่างระหว่างปุ่ม */
+        }
+
+        /* ✅ ปุ่ม "ดูสลิป" ให้อยู่บรรทัดเดียวกัน */
+        .admin-table td a.btn-gray {
+            display: inline-block;
+            /* บังคับให้อยู่แนวนอน */
+            vertical-align: middle;
+            /* จัดให้อยู่ระดับเดียวกับ badge */
+            white-space: nowrap;
+            /* ไม่ตัดบรรทัด */
+            margin-right: 4px;
+            /* เผื่อระยะเล็กน้อยถ้ามี badge ต่อท้าย */
         }
     </style>
 </head>

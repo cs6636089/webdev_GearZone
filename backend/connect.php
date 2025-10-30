@@ -1,5 +1,5 @@
 <?php
-// ปรับค่าตามเครื่องของคุณ
+
 $host = 'localhost';
 $db   = '168DB_47';
 $user = '168DB47';     // user MySQL

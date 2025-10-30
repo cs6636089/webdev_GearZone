@@ -8,15 +8,18 @@ $addr    = isset($_POST['shipping_address']) ? trim($_POST['shipping_address']) 
 
 if ($user_id == 0) {
   $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ";
-  header("Location: /~cs6636089/GearZone/frontend/login.html"); exit;
+  header("Location: /~cs6636089/GearZone/frontend/login.html");
+  exit;
 }
 if (empty($cart)) {
   $_SESSION['cart_flash'] = "ตะกร้าสินค้าว่าง";
-  header("Location: /~cs6636089/GearZone/backend/cart_view.php"); exit;
+  header("Location: /~cs6636089/GearZone/backend/cart_view.php");
+  exit;
 }
 if ($addr === '') {
   $_SESSION['cart_flash'] = "กรุณากรอกที่อยู่จัดส่ง";
-  header("Location: /~cs6636089/GearZone/backend/checkout.php"); exit;
+  header("Location: /~cs6636089/GearZone/backend/checkout.php");
+  exit;
 }
 
 /* คำนวณยอดรวมจากตะกร้า */

@@ -22,6 +22,7 @@ $stmt->execute([$user_id]);
 
 <!doctype html>
 <html lang="th">
+
 <head>
   <meta charset="utf-8">
   <title>คำสั่งซื้อของฉัน</title>
@@ -31,6 +32,7 @@ $stmt->execute([$user_id]);
       max-width: 1100px;
       margin: 20px auto 40px;
     }
+
     table {
       width: 100%;
       background: #fff;
@@ -38,15 +40,19 @@ $stmt->execute([$user_id]);
       border-radius: 12px;
       overflow: hidden;
     }
-    th, td {
+
+    th,
+    td {
       padding: 12px;
       border-bottom: 1px solid #eee;
       text-align: left;
       color: #222;
     }
+
     th {
       background: #f6f6f6;
     }
+
     .btn {
       padding: 6px 10px;
       border: none;
@@ -56,6 +62,7 @@ $stmt->execute([$user_id]);
       text-decoration: none;
       cursor: pointer;
     }
+
     .upload-form {
       margin-top: 6px;
     }
@@ -123,13 +130,13 @@ $stmt->execute([$user_id]);
               <?php } elseif ($o['payment_status'] == 'Paid') { ?>
                 <p style="color:green; font-size:14px;">ชำระเงินเรียบร้อย</p>
               <?php } ?>
-                <a href="/~cs6636089/GearZone/backend/report_issue.php?order_id=<?php echo $o['order_id']; ?>"
+              <a href="/~cs6636089/GearZone/backend/report_issue.php?order_id=<?php echo $o['order_id']; ?>"
                 style="margin-top:6px; display:inline-block; 
                         color:#555; text-decoration:underline; font-size:14px;"
-                onmouseover="this.style.color='red'" 
+                onmouseover="this.style.color='red'"
                 onmouseout="this.style.color='#555'">
                 รายงานปัญหา
-                </a>
+              </a>
 
 
             </td>
@@ -144,4 +151,5 @@ $stmt->execute([$user_id]);
     <div class="footer-right">&copy; 2025 GearZone. สงวนลิขสิทธิ์.</div>
   </footer>
 </body>
+
 </html>

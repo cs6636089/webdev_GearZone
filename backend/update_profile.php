@@ -27,4 +27,3 @@ echo "<script>
   window.location.href='/~cs6636089/GearZone/index.html';
 </script>";
 exit;
-?>
