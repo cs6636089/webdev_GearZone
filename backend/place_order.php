@@ -2,9 +2,24 @@
 session_start();
 include "./connect.php";
 
-$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
-$cart    = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
-$addr    = isset($_POST['shipping_address']) ? trim($_POST['shipping_address']) : '';
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    $user_id = 0;
+}
+
+if (isset($_SESSION['cart'])) {
+    $cart = $_SESSION['cart'];
+} else {
+    $cart = [];
+}
+
+if (isset($_POST['shipping_address'])) {
+    $addr = trim($_POST['shipping_address']);
+} else {
+    $addr = '';
+}
+
 
 if ($user_id == 0) {
   $_SESSION['cart_flash'] = "กรุณาเข้าสู่ระบบก่อนสั่งซื้อ";
@@ -33,6 +48,7 @@ $bday_discount = 0.0;
 $stmt = $pdo->prepare("SELECT birthdate FROM Users WHERE user_id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
 if ($user && !empty($user['birthdate'])) {
   $birth_month   = (int)date('n', strtotime($user['birthdate']));
   $current_month = (int)date('n');
