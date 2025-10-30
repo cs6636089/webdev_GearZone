@@ -1,5 +1,7 @@
 <?php
 session_start();
+echo "<!-- Session ID: " . session_id() . " -->";
+
 if (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0) {
   $logged_in = true;
 } else {

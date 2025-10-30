@@ -8,8 +8,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {
   exit;
 }
 
-$flash = isset($_SESSION['cart_flash']) ? $_SESSION['cart_flash'] : '';
-unset($_SESSION['cart_flash']);
+if (isset($_SESSION['cart_flash'])) {
+    $flash = $_SESSION['cart_flash'];
+    unset($_SESSION['cart_flash']);
+} else {
+    $flash = '';
+}
 
 $cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 ?>
