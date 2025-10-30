@@ -14,7 +14,7 @@ $q    = trim($_GET['q'] ?? '');
 $timeCond = " o.order_day BETWEEN ? AND ? ";
 $argsBase = [$from, $to];
 
-/* ---------- 🏆 Top Products ---------- */
+/* ---------- Top Products ---------- */
 $andProduct = '';
 $argsProd = $argsBase;
 if ($q !== '') {
@@ -41,7 +41,7 @@ $st = $pdo->prepare($sqlTopProducts);
 $st->execute($argsProd);
 $topProducts = $st->fetchAll();
 
-/* ---------- 💰 ยอดขายรวมรายวัน (เฉพาะที่ชำระแล้ว) ---------- */
+/* ---------- ยอดขายรวมรายวัน (เฉพาะที่ชำระแล้ว) ---------- */
 $sqlRevenue = "
   SELECT o.order_day AS d, SUM(o.total_amount) AS total
   FROM Orders o
@@ -53,7 +53,7 @@ $st = $pdo->prepare($sqlRevenue);
 $st->execute($argsBase);
 $byDay = $st->fetchAll();
 
-/* ---------- ⚠️ รายงานปัญหาสินค้า ---------- */
+/* ---------- รายงานปัญหาสินค้า ---------- */
 $sqlReports = "
   SELECT r.report_id,
          u.username,
@@ -71,7 +71,52 @@ $sqlReports = "
 $st = $pdo->prepare($sqlReports);
 $st->execute($argsBase);
 $reports = $st->fetchAll();
+
+/* ---------- สินค้าที่ราคาแพงกว่าค่าเฉลี่ย ---------- */
+$andName = '';
+$argsAvg = [];
+if ($q !== '') { // ถ้ามีคำค้นสินค้า ใช้กรองชื่อด้วย
+    $andName = " AND p.product_name LIKE ? ";
+    $argsAvg[] = "%$q%";
+}
+
+$sqlAboveAvg = "
+SELECT p.product_name, p.price
+FROM Products p
+WHERE p.price > (SELECT AVG(price) FROM Products)
+$andName
+ORDER BY p.price DESC, p.product_name
+";
+$st = $pdo->prepare($sqlAboveAvg);
+$st->execute($argsAvg);
+$aboveAvg = $st->fetchAll();
+
+/* ---------- สินค้าที่ราคาแพงกว่าค่าเฉลี่ย ---------- */
+$andName = '';
+$argsAvg = [];
+if ($q !== '') { // ถ้ามีคำค้นสินค้า ใช้กรองชื่อด้วย
+    $andName = " AND p.product_name LIKE ? ";
+    $argsAvg[] = "%$q%";
+}
+
+// หาค่าเฉลี่ยราคาสินค้าทั้งหมด
+$sqlAvgPrice = "SELECT ROUND(AVG(price), 2) FROM Products WHERE price IS NOT NULL";
+$avgPrice = (float)$pdo->query($sqlAvgPrice)->fetchColumn();
+
+$sqlAboveAvg = "
+  SELECT p.product_name, p.price
+  FROM Products p
+  WHERE p.price IS NOT NULL
+    AND p.price > (SELECT AVG(price) FROM Products WHERE price IS NOT NULL)
+  $andName
+  ORDER BY p.price DESC, p.product_name
+";
+$st = $pdo->prepare($sqlAboveAvg);
+$st->execute($argsAvg);
+$aboveAvg = $st->fetchAll();
+
 ?>
+
 <!doctype html>
 <html lang="th">
 
@@ -190,7 +235,7 @@ $reports = $st->fetchAll();
             <h2>รายงานสรุป</h2>
             <hr>
 
-            <!-- 💰 ยอดขายรวมรายวัน -->
+            <!-- ยอดขายรวมรายวัน -->
             <div class="section">
                 <h3>ยอดขายรวมรายวัน</h3>
                 <p class="sub">รวมยอดเฉพาะออเดอร์ที่ชำระแล้ว</p>
@@ -217,7 +262,7 @@ $reports = $st->fetchAll();
                 </table>
             </div>
 
-            <!-- 🏆 สินค้าขายดี -->
+            <!-- สินค้าขายดี -->
             <div class="section">
                 <h3>สินค้าขายดี (Top Products)</h3>
                 <!-- <p class="sub">เรียงตามยอดขาย (บาท) ในช่วงวันที่เลือก</p> -->
@@ -246,7 +291,39 @@ $reports = $st->fetchAll();
                 </table>
             </div>
 
-            <!-- ⚠️ รายงานปัญหาสินค้า -->
+            <!-- สินค้าที่ราคาแพงกว่าค่าเฉลี่ย -->
+            <div class="section">
+                <h3>สินค้าที่ราคาแพงกว่าค่าเฉลี่ย</h3>
+                <p class="sub">
+                    แสดงสินค้าที่มีราคา > ค่าเฉลี่ยของสินค้าทั้งหมด
+                    <br><strong>ราคาเฉลี่ยทั้งหมด: ฿ <?= number_format($avgPrice, 2) ?></strong>
+                    <?= $q !== '' ? ' (กรองชื่อด้วย: ' . htmlspecialchars($q) . ')' : '' ?>
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อสินค้า</th>
+                            <th>ราคา (บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($aboveAvg)): foreach ($aboveAvg as $r): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($r['product_name']) ?></td>
+                                    <td><?= number_format($r['price'], 2) ?></td>
+                                </tr>
+                            <?php endforeach;
+                        else: ?>
+                            <tr>
+                                <td colspan="2">— ไม่พบสินค้าที่แพงกว่าค่าเฉลี่ย —</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- รายงานปัญหาสินค้า -->
             <div class="section">
                 <h3>รายงานปัญหาสินค้า (Reports)</h3>
                 <!-- <p class="sub">รวมผู้แจ้ง / สินค้า / ประเภทปัญหา / สถานะคำสั่งซื้อ</p> -->
