@@ -14,7 +14,7 @@
         <div class="container navbar">
             <div class="brand">GEARZONE</div>
             <div id="navbar-container"></div>
-            </div>
+        </div>
     </header>
     <main>
         <section class="hero container">
@@ -30,8 +30,8 @@
         <section class="container" id="popular">
             <div class="section-title">
                 <h3>โปรโมชั่นพิเศษ ชิ้นที่ 2 ลด 50%</h3>
-                </div>
-                <div class="grid promo-grid" id="product-grid"></div>
+            </div>
+            <div class="grid promo-grid" id="product-grid"></div>
             </div>
         </section>
 
@@ -58,6 +58,13 @@
             </div>
         </section>
 
+        <section class="container" id="json-products">
+            <div class="section-title">
+                <h3>สินค้าจากข้อมูล JSON (ตัวอย่าง)</h3>
+                <p>ข้อมูลดึงจากไฟล์ PHP ที่ส่งออกเป็น JSON</p>
+            </div>
+            <div class="grid" id="json-grid"></div>
+        </section>
 
     </main>
 
@@ -65,34 +72,55 @@
         <div class="footer-left">GEARZONE</div><br>
         <div class="footer-right">&copy; 2025 GearZone. สงวนลิขสิทธิ์.</div>
     </footer>
+
+    <script>
+        // Navbar 
+        (function () {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("navbar-container").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.open("GET", "/~cs6636089/GearZone/backend/navbar.php", true);
+            xhr.withCredentials = true;
+            xhr.send();
+        })();
+
+        // โหลดการ์ดโปรค้างสต็อก
+        (function () {
+            var xhr2 = new XMLHttpRequest();
+            xhr2.onreadystatechange = function () {
+                if (xhr2.readyState === 4 && xhr2.status === 200) {
+                    document.getElementById("product-grid").innerHTML = xhr2.responseText;
+                }
+            };
+            xhr2.open("GET", "/~cs6636089/GearZone/backend/promos_overstock.php", true);
+            xhr2.withCredentials = true;
+            xhr2.send();
+        })();
+    </script>
+
+    <script>
+        fetch('/~cs6636089/GearZone/backend/json_products.php')
+            .then(res => res.text())
+            .then(txt => {
+                const data = JSON.parse(txt);
+                console.log(data);
+
+                let html = "";
+                data.forEach(p => {
+                    html += `
+        <div style="background:white; border:1px solid #ccc; border-radius:10px; width:200px; margin:10px; padding:10px; text-align:center;">
+          <h4 style="color:black;">${p.product_name}</h4>
+          <p style="color:red;">฿${p.price}</p>
+        </div>`;
+                });
+
+                document.getElementById("json-grid").innerHTML = html;
+            });
+    </script>
+
 </body>
-
-<script>
-  // Navbar 
-  (function(){
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        document.getElementById("navbar-container").innerHTML = xhr.responseText;
-      }
-    };
-    xhr.open("GET", "/~cs6636089/GearZone/backend/navbar.php", true);
-    xhr.withCredentials = true;
-    xhr.send();
-  })();
-
-  // โหลดการ์ดโปรค้างสต็อก
-  (function(){
-    var xhr2 = new XMLHttpRequest();
-    xhr2.onreadystatechange = function() {
-      if (xhr2.readyState === 4 && xhr2.status === 200) {
-        document.getElementById("product-grid").innerHTML = xhr2.responseText;
-      }
-    };
-    xhr2.open("GET", "/~cs6636089/GearZone/backend/promos_overstock.php", true);
-    xhr2.withCredentials = true;
-    xhr2.send();
-  })();
-</script>
 
 </html>
